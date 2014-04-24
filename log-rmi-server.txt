@@ -1,0 +1,14 @@
+Apr 23, 2014 10:13:01 PM fr.mines_nantes.atlanmod.monitoring.ResourcesMonitoring main
+INFO: Creating the Registry.
+Apr 23, 2014 10:13:01 PM fr.mines_nantes.atlanmod.monitoring.ResourcesMonitoring main
+INFO: Starting the Master.
+Apr 23, 2014 10:13:01 PM fr.mines_nantes.atlanmod.monitoring.ResourcesMonitoring main
+INFO: Master started.
+Apr 23, 2014 10:13:01 PM fr.mines_nantes.atlanmod.monitoring.ResourcesMonitoring main
+INFO: Waiting for connections.
+Apr 23, 2014 10:13:01 PM fr.mines_nantes.atlanmod.monitoring.ResourcesMonitoring main
+INFO: Starting monitor.
+Apr 23, 2014 10:13:01 PM fr.mines_nantes.atlanmod.monitoring.ResourcesMonitoring main
+INFO: Stopping monitor.
+Apr 23, 2014 10:13:02 PM fr.mines_nantes.atlanmod.monitoring.ResourcesMonitoring stopMonitoring
+INFO: Stopping the system.
