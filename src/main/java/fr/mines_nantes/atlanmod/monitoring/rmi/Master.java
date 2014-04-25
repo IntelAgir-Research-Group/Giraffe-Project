@@ -1,8 +1,10 @@
 package fr.mines_nantes.atlanmod.monitoring.rmi;
 
+import java.io.IOException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface Master extends Remote {
-    <T> T executeTask(Task<T> t) throws RemoteException;
+    public Boolean receiveMonitorMessages(String a) throws RemoteException; 
+    public Boolean receiveMonitorNames(String a) throws RemoteException, NumberFormatException, IOException;
 }
