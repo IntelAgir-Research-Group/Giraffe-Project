@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.Naming;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -28,6 +29,15 @@ public class MonitorRunner {
 	
 	public static void main(String args[]) throws UnknownHostException {
 		MonitorRunner monR = new MonitorRunner();
+		/*
+		if (args.length < 1) {
+			LOGGER.warning("[MONITOR] Specify the hostname: MonitorRunner host");
+			System.exit(0);
+		}
+		*/
+	//	LOGGER.info("[MONITOR] Host: "+args[0]);
+	//	System.setProperty("java.rmi.server.hostname", args[0]);
+		
 		monR.startMonitor();
 	}
 	
@@ -72,12 +82,13 @@ public class MonitorRunner {
 	///
 	// RMI creating session
 	///
-	public void creatLocalRegistry() {
+	public void creatLocalRegistry() throws UnknownHostException {
 		LOGGER.info("[MONITOR] Creating a Local Registry instance");
+        ip = InetAddress.getLocalHost();
 		Integer port;
 		try {
 			port = Integer.valueOf(ReadConfigurations.getPropertyValue("monitor_port"));
-			new RmiRegistryRunner(port);
+			new RmiRegistryRunner(port, ip.getHostAddress());
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -87,7 +98,7 @@ public class MonitorRunner {
 		}
 	}
 	
-	public void registryRMI() {
+	public void registryRMI() throws UnknownHostException {
 		///
 		// Take the <<name>> and the <<host>> in the <<slaves>> file.
 		///
@@ -97,7 +108,9 @@ public class MonitorRunner {
         	// Creating a server RMI
             String name = "Monitor";
             ClientImpl monitor = new ClientImpl();
-            String host = "127.0.0.1";
+            //String host = "172.28.2.65";
+            // Need to set hostname IP Address in /etc/hosts  
+            String host = ip.getHostAddress();
             Integer port = Integer.valueOf(ReadConfigurations.getPropertyValue("monitor_port"));
             String url="rmi://"+host+":"+port+"/"+name;
             Naming.bind(url, monitor);
@@ -122,10 +135,10 @@ public class MonitorRunner {
 	    try
         {
             SrvRMI = (Master) Naming.lookup(strName);
-            ip = InetAddress.getLocalHost();
             if (!SrvRMI.receiveMonitorNames(ip.getHostAddress())) {
             	LOGGER.severe("[MONITOR] Error adding"+ip.getHostAddress()+" in the monitors list");
             }
+            LOGGER.info("[MONITOR] Lookup OK");
         }
         catch (Exception e)
         {

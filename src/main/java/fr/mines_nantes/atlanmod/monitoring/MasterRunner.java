@@ -2,7 +2,10 @@ package fr.mines_nantes.atlanmod.monitoring;
 
 import java.io.IOException;
 import java.rmi.Naming;
+import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
+import java.security.AccessControlException;
+import java.security.Permission;
 import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -56,6 +59,13 @@ public class MasterRunner {
 	}
 	
 	public static void main(String args[]) throws InterruptedException, IOException {
+		if (System.getSecurityManager() == null) {
+			System.setSecurityManager (new RMISecurityManager() {
+				public void checkPermission(Permission perm) {}
+			    public void checkConnect (String host, int port) {}
+			    public void checkConnect (String host, int port, Object context) {}
+			  });
+	    }
 		mR = new MasterRunner();
 		mR.setLogger();
 		mR.registryRMI();
@@ -73,9 +83,10 @@ public class MasterRunner {
 		            String name = "Server";
 		            MasterImpl srv = new MasterImpl();
 		            String host = ReadConfigurations.getPropertyValue("server_host");
+		            //System.setProperty("java.rmi.server.hostname", host);
 		            Integer port = Integer.valueOf(ReadConfigurations.getPropertyValue("server_port"));
 		            String url="rmi://"+host+":"+port+"/"+name;
-		            Naming.bind(url, srv);
+		            Naming.rebind(url, srv);
 		        } catch (Exception e) {
 		            System.err.println("Server bound exception:");
 		            e.printStackTrace();

@@ -92,7 +92,7 @@ public class StartUp {
 			
 			LOGGER.info("[SERVER] Starting monitors.");
 			MonitorRunner m = new MonitorRunner();
-			m.startMonitor();
+	//		m.startMonitor();
 			
 			Thread.currentThread().sleep(1000);
 			
