@@ -1,12 +1,9 @@
 package fr.mines_nantes.atlanmod.monitoring.rmi;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.rmi.registry.LocateRegistry;
 
 import fr.mines_nantes.atlanmod.ReadConfigurations;
-import fr.mines_nantes.atlanmod.monitoring.StartUp;
 
 public class RmiRegistryRunner {
 	

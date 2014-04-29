@@ -4,10 +4,7 @@ import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.FileHandler;
-import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -16,7 +13,7 @@ import fr.mines_nantes.atlanmod.ReadConfigurations;
 
 public class Watchdog extends Thread {
 	
-	static private Logger LOGGER = Logger.getLogger(StartUp.class.getName());
+	static private Logger LOGGER = Logger.getLogger(Watchdog.class.getName());
 	FileHandler logMonitor = null;
 	SimpleFormatter formatterTxt = null;
 	Long totalMem, freeMem;
@@ -25,6 +22,11 @@ public class Watchdog extends Thread {
 	Integer relaxCountCPUUsage;
 	Integer relaxCountMemUsage;
 	boolean stop = false;
+	boolean pause = false;
+	
+	///
+	// Logger
+	///
 	
 	public void setLogger() {
 		String level;
@@ -42,6 +44,10 @@ public class Watchdog extends Thread {
 		}
 	}
 	
+	///
+	// Monitoring
+	///
+	
 	public void run() {
 		
 		try {
@@ -55,6 +61,17 @@ public class Watchdog extends Thread {
 			e2.printStackTrace();
 		}
 		while (!stop) {
+			
+			// Waiting (when are adding new nodes)
+			while (pause) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
 			OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
 			Method[] methods = operatingSystemMXBean.getClass().getDeclaredMethods();
 			
@@ -75,9 +92,15 @@ public class Watchdog extends Thread {
 			        //	LOGGER.warning("[MONITOR] CPU usage is higher then 80%");
 			        	relaxCountCPUUsage--;
 			        	// Here I used == to send the message only once.
-			        	if (relaxCountCPUUsage==0){
+			        	if (relaxCountCPUUsage<=0){
 			        		LOGGER.severe("[MONITOR] Sending CPU altert message to Server");
-			        		MonitorRunner.sendAlert("CPU usage is higher then 80%");
+			        		//MonitorRunner.sendCPUAlert("CPU usage is higher then 80%");
+			        		try {
+								MonitorRunner.sendCPUAlert();
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 			        	}
 			        }
 			    }
@@ -108,9 +131,15 @@ public class Watchdog extends Thread {
 				        	LOGGER.warning("[MONITOR] Memory usage is higher then 80%");
 				        	relaxCountMemUsage--;
 				        	// Here I used == to send the message only once.
-				        	if (relaxCountMemUsage==0) {
+				        	if (relaxCountMemUsage<=0) {
 				        		LOGGER.severe("[MONITOR] Sending memory alert message to Server");
-				        		MonitorRunner.sendAlert("Memory usage is higher then 80%");
+				        		//MonitorRunner.sendMemAlert("Memory usage is higher then 80%");
+				        		try {
+									MonitorRunner.sendMemAlert();
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
 				        	}
 				        } 
 			        }
@@ -133,7 +162,19 @@ public class Watchdog extends Thread {
 		LOGGER.info("[MONITOR] Stopping Monitoring.");
 	}
 	
+	///
+	// Signals from MonitorRunner
+	///
+	
 	public void stopWatchdog() {
 		stop = true;
+	}
+	
+	public void pauseWatchdog() {
+		pause = true;
+	}
+	
+	public void restartWatchdog() {
+		pause = false;
 	}
 }

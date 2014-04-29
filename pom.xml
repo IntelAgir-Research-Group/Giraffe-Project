@@ -5,4 +5,17 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>Cloud-Resources-Monitor</name>
   <description>An application to monitor and request resources in Cloud environments.</description>
+  <build>
+      <resources>
+        <resource>
+            <directory>src/main/resources</directory>
+            <!--  
+            <excludes>
+                <exclude>logback.xml</exclude>
+            </excludes>
+            -->
+        </resource>
+          
+      </resources>
+  </build>
 </project>

@@ -3,6 +3,7 @@ package fr.mines_nantes.atlanmod.monitoring;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -13,59 +14,64 @@ import java.util.logging.SimpleFormatter;
 
 import fr.mines_nantes.atlanmod.ReadConfigurations;
 import fr.mines_nantes.atlanmod.monitoring.rmi.*;
+import fr.mines_nantes.atlanmod.parser.Executor;
 
 public class MonitorRunner {
 	
 	static Boolean stop = false;
-	static private Logger LOGGER = Logger.getLogger(StartUp.class.getName());
+	static private Logger LOGGER = Logger.getLogger(MonitorRunner.class.getName());
 	private FileHandler logMonitor;
 	private SimpleFormatter formatterTxt;
 	static private String hostSrv = "";
 	static private int portSrv = 0;
 	static private String srvName = "";
 	static private Master SrvRMI = null;
-	private Watchdog wd;
+	static private Watchdog wd;
 	private static InetAddress ip;
+	private static boolean start = false;
+	private static String monitorName="";
+	private static Executor exec;
 	
-	public static void main(String args[]) throws UnknownHostException {
-		MonitorRunner monR = new MonitorRunner();
-		/*
-		if (args.length < 1) {
-			LOGGER.warning("[MONITOR] Specify the hostname: MonitorRunner host");
-			System.exit(0);
-		}
-		*/
-	//	LOGGER.info("[MONITOR] Host: "+args[0]);
-	//	System.setProperty("java.rmi.server.hostname", args[0]);
-		
-		monR.startMonitor();
-	}
-	
-	// Remove that method
-	public void startMonitor() throws UnknownHostException {
-		setLogger();		
-		registryRMI();
-		startWatch();
-	}
-	
+	///
+	// Logger
+	///
 	public void setLogger() {
 		String level;
-		try {
-			level = ReadConfigurations.getPropertyValue("monitor_log_level");
-			LOGGER.setLevel(Level.parse(level));
-			String logFile = ReadConfigurations.getPropertyValue("monitor_log_file");
-			logMonitor = new FileHandler(logFile);
-			formatterTxt = new SimpleFormatter();
-		    logMonitor.setFormatter(formatterTxt);
-		    LOGGER.addHandler(logMonitor);
-		} catch (IOException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
+
+			try {
+				level = ReadConfigurations.getPropertyValue("monitor_log_level");
+				LOGGER.setLevel(Level.parse(level));
+				String logFile = ReadConfigurations.getPropertyValue("monitor_log_file");
+				logMonitor = new FileHandler(logFile);
+				formatterTxt = new SimpleFormatter();
+			    logMonitor.setFormatter(formatterTxt);
+			    LOGGER.addHandler(logMonitor);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
-		
+	
+	public static void printLog(String log) {
+		LOGGER.info(log);
+	}
+	
+	///
+	// Watchdog
+	///
+	
 	public void startWatch() {
 		wd = new Watchdog();
+		// Waiting until master send a signal to start to monitoring
+		while(!start) {
+			// waiting
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		wd.start();
 	}
 	
@@ -73,12 +79,34 @@ public class MonitorRunner {
 		wd.stopWatchdog();
 	}
 	
-	public void stopMonitor() throws InterruptedException {
-		// stop=true;
-		stopWatch();
-	//	System.exit(0);
+	public static void pauseWatchdog() {
+		wd.pauseWatchdog();
 	}
 	
+	public static void restartWatchdog() {
+		wd.restartWatchdog();
+	}
+	
+	
+	// Remove that method
+	/*
+	public void startMonitor() throws NumberFormatException, IOException, AlreadyBoundException {
+		setLogger();		
+		registryRMI();
+		startWatch();
+	}
+	*/
+	
+	public static void setStart(boolean b) {
+		start = b;
+	}
+	
+	public static void stopMonitor() throws InterruptedException {
+		// stop=true;
+		//stopWatch();
+		System.exit(0);
+	}
+		
 	///
 	// RMI creating session
 	///
@@ -89,21 +117,19 @@ public class MonitorRunner {
 		try {
 			port = Integer.valueOf(ReadConfigurations.getPropertyValue("monitor_port"));
 			new RmiRegistryRunner(port, ip.getHostAddress());
-		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} catch (Exception e) {
+			LOGGER.severe("[MONITOR] Error: "+e.getMessage());
+			System.exit(0);
+		} 
 	}
 	
 	public void registryRMI() throws UnknownHostException {
 		///
 		// Take the <<name>> and the <<host>> in the <<slaves>> file.
 		///
-		LOGGER.info("[MONITOR] Registering in the RMI");
+		LOGGER.info("[MONITOR] Creating a local RMI Registry");
 		creatLocalRegistry();
+
 		try {
         	// Creating a server RMI
             String name = "Monitor";
@@ -115,9 +141,9 @@ public class MonitorRunner {
             String url="rmi://"+host+":"+port+"/"+name;
             Naming.bind(url, monitor);
             addInMasterList();
-        } catch (Exception e) {
-            LOGGER.warning("[MONITOR] Error: "+e.toString());
-        }
+		} catch(Exception e) {
+			LOGGER.severe("[MONITOR] Error: "+e.getMessage());
+		}
 	}
 	
 	public void addInMasterList() {
@@ -131,20 +157,20 @@ public class MonitorRunner {
 		}
 		// Connecting with the server
 		String strName = "rmi://"+hostSrv+":"+portSrv+"/"+srvName;
-	    LOGGER.info("[MONITOR] Looking up " + strName + "...");
+	    LOGGER.info("[MONITOR] Registering monitor in the Server ");
 	    try
         {
             SrvRMI = (Master) Naming.lookup(strName);
             if (!SrvRMI.receiveMonitorNames(ip.getHostAddress())) {
             	LOGGER.severe("[MONITOR] Error adding"+ip.getHostAddress()+" in the monitors list");
             }
-            LOGGER.info("[MONITOR] Lookup OK");
         }
         catch (Exception e)
         {
 	        LOGGER.warning("[MONITOR] Client: Exception thrown looking up " + strName);
 	        LOGGER.warning("[MONITOR] Error message: "+ e.getMessage());
         }
+	    LOGGER.info("[MONITOR] Registered");
 	}
 	
 	public static void srvConnect(String srvName) {
@@ -169,15 +195,78 @@ public class MonitorRunner {
         }
 	}
 	
-	public static void sendAlert(String alert) {
+	///
+	// Alerts to Master
+	///
+	
+	public static void sendMemAlert() throws InterruptedException {
 		srvConnect("Server");
 		try {
-			if (!SrvRMI.receiveMonitorMessages(alert)) {
+			if (!SrvRMI.receiveMemAlert()) {
 			    LOGGER.warning("[MONITOR] Client: Remote receiveMonitorMessages() call failed.");
 			}
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		LOGGER.warning("[MONITOR] Sending the memory alert to Master");
+	}
+	
+	public static void sendCPUAlert() throws InterruptedException {
+		srvConnect("Server");
+		try {
+			if (!SrvRMI.receiveCPUAlert()) {
+			    LOGGER.severe("[MONITOR] Client: Remote receiveMonitorMessages() call failed.");
+			}
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		LOGGER.warning("[MONITOR] Sending the CPU alert to Master");
+	}
+	
+	public static boolean createNode() {
+		try {
+			String cl = (String) ReadConfigurations.getPropertyValue("server_auto_scale_class");
+			exec = new Executor(cl);
+			if (exec.execCreator()){
+				LOGGER.info("Node created!");
+				return true;
+			} else {
+				return false;
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public static void sendCreatedMsg(boolean b) {
+		srvConnect("Server");
+		try {
+			if (!SrvRMI.receiveCreatedMessage(b)) {
+			    LOGGER.severe("[MONITOR] Client: Remote receiveCreatedMessage() call failed.");
+			}
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	///
+	// Starting Monitor
+	///
+	
+	public static void main(String args[]) throws NumberFormatException, IOException, AlreadyBoundException {
+		MonitorRunner monR = new MonitorRunner();
+		monitorName = "Monitor"+monR.hashCode();
+		//monR.startMonitor();
+		monR.setLogger();		
+		monR.registryRMI();
+		monR.startWatch();
 	}
 }

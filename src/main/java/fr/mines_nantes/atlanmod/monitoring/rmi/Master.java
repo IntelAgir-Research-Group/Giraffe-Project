@@ -5,6 +5,8 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface Master extends Remote {
-    public Boolean receiveMonitorMessages(String a) throws RemoteException; 
     public Boolean receiveMonitorNames(String a) throws RemoteException, NumberFormatException, IOException;
+    public Boolean receiveCPUAlert() throws RemoteException, InterruptedException;
+    public Boolean receiveMemAlert() throws RemoteException, InterruptedException;
+    public Boolean receiveCreatedMessage(boolean tf) throws RemoteException, InterruptedException;
 }
