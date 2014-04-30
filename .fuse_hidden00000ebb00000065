@@ -1,0 +1,12 @@
+Apr 30, 2014 6:46:36 PM fr.mines_nantes.atlanmod.monitoring.MasterRunner registryRMI
+INFO: [SERVER] Creating the Registry
+Apr 30, 2014 6:46:36 PM fr.mines_nantes.atlanmod.monitoring.MasterRunner registryRMI
+INFO: [SERVER] Registry created
+Apr 30, 2014 6:46:36 PM fr.mines_nantes.atlanmod.monitoring.MasterRunner startMaster
+INFO: [SERVER] Starting the Master
+Apr 30, 2014 6:46:36 PM fr.mines_nantes.atlanmod.monitoring.MasterRunner startMaster
+INFO: [SERVER] Waiting for connections...
+Apr 30, 2014 6:46:44 PM fr.mines_nantes.atlanmod.monitoring.MasterRunner monitorConnect
+INFO: [SERVER] Looking up rmi://172.28.2.65:1098/Monitor...
+Apr 30, 2014 6:46:44 PM fr.mines_nantes.atlanmod.monitoring.MasterRunner monitorConnect
+INFO: [SERVER] Looking up rmi://172.28.2.65:1098/Monitor...

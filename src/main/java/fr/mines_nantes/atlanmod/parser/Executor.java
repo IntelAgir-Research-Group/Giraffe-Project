@@ -3,6 +3,7 @@ package fr.mines_nantes.atlanmod.parser;
 import java.lang.reflect.Method;
 
 import fr.mines_nantes.atlanmod.annotations.Create;
+import fr.mines_nantes.atlanmod.annotations.Deploy;
 import fr.mines_nantes.atlanmod.monitoring.MonitorRunner;
 
 public class Executor {
@@ -48,8 +49,30 @@ public class Executor {
 	       return false;
 	}
 	
-	public void execDeploy() {
+	public boolean execDeploy() {
+		MonitorRunner.printLog("[EXECUTOR] Deploying the app...");
 		
+		//AutoScaleExecution runner = new AutoScaleExecution();
+        Method[] methods = runner.getClass().getMethods();
+
+        for (Method method : methods) {
+            Deploy c = method.getAnnotation(Deploy.class);
+            if (c != null) {
+                try {
+                    method.invoke(runner);
+                    return true;
+                } catch (Exception e) {
+                	MonitorRunner.printLog("[EXECUTOR] Error:" + e.toString());
+                 	return false;
+                }
+            } 
+       }  
+       return false;
+	}
+	
+	public boolean execDeployMaster() {
+		
+		return true;
 	}
 	
 	public void execMonitor() {

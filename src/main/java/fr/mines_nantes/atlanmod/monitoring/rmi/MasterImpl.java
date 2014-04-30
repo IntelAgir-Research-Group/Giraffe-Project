@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Date;
+import java.util.logging.Logger;
+
+import com.sun.org.apache.commons.logging.Log;
 
 import fr.mines_nantes.atlanmod.monitoring.Adviser;
 import fr.mines_nantes.atlanmod.monitoring.MasterRunner;
@@ -22,6 +25,7 @@ public class MasterImpl extends UnicastRemoteObject implements Master {
 	
 	private static final long serialVersionUID = 1L;
 	private static int countCreated = 0;
+	private static int countDeployed = 0;
 
 	public MasterImpl() throws RemoteException {
         super();
@@ -49,7 +53,31 @@ public class MasterImpl extends UnicastRemoteObject implements Master {
 			if (countCreated == MasterRunner.monitorAddresses.size()) {
 				MasterRunner.setCreated();
 			}
+			return true;
 		}
+	}
+	
+	public synchronized Boolean receiveDeployAppMasterMessage(boolean md) throws RemoteException, InterruptedException {
+		if (md == false){
+			return false;
+		} else {
+			MasterRunner.setAppMasterDeployed();
+			return true;
+		}
+	}
+	
+	public synchronized Boolean receiveDeployAppMessage(boolean ad) throws RemoteException, InterruptedException {
+		if (ad == false) {
+			MasterRunner.setBroken();
+	//		return false;
+		}
+		
+		countDeployed++;
+		// Set to -1 when will use master
+		if (countDeployed == (MasterRunner.monitorAddresses.size())) {
+			MasterRunner.setAppDeployed();
+		}
+		
 		return true;
 	}
 }

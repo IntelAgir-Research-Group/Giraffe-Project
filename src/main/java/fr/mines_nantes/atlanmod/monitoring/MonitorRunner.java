@@ -225,23 +225,6 @@ public class MonitorRunner {
 		LOGGER.warning("[MONITOR] Sending the CPU alert to Master");
 	}
 	
-	public static boolean createNode() {
-		try {
-			String cl = (String) ReadConfigurations.getPropertyValue("server_auto_scale_class");
-			exec = new Executor(cl);
-			if (exec.execCreator()){
-				LOGGER.info("Node created!");
-				return true;
-			} else {
-				return false;
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
-	}
-	
 	public static void sendCreatedMsg(boolean b) {
 		srvConnect("Server");
 		try {
@@ -254,6 +237,83 @@ public class MonitorRunner {
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+	
+	public static void sendMasterDeployed(boolean b) {
+		srvConnect("Server");
+		try {
+			if (!SrvRMI.receiveDeployAppMasterMessage(b)) {
+			    LOGGER.severe("[MONITOR] Client: Remote receiveDeployAppMasterMessage() call failed.");
+			}
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void sendDeployAppMessage(boolean b) {
+		srvConnect("Server");
+		try {
+			if (!SrvRMI.receiveDeployAppMessage(b)) {
+			    LOGGER.severe("[MONITOR] Client: Remote sendDeployAppMessage() call failed.");
+			}
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	///
+	// Executing the actions
+	///
+	
+	public static void executor() {
+		try {
+			String cl = (String) ReadConfigurations.getPropertyValue("server_auto_scale_class");
+			exec = new Executor(cl);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static boolean createNode() {
+		executor();
+		LOGGER.info("[MONITOR] Creating node!");
+		if (exec.execCreator()){
+			LOGGER.info("[MONITOR] Node created!");
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public static boolean deployMasterApp() {
+		executor();
+		LOGGER.info("[MONITOR] Deploying master app!");
+		if (exec.execDeployMaster()){
+			LOGGER.info("[MONITOR] App master deployed!");
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public static boolean deployApp() {
+		executor();
+		LOGGER.info("[MONITOR] Deploying app!");
+		if (exec.execDeploy()){
+			LOGGER.info("[MONITOR] App deployed!");
+			return true;
+		} else {
+			return false;
 		}
 	}
 	

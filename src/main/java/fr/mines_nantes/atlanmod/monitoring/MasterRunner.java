@@ -12,6 +12,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import org.virtualbox_4_1.VirtualBoxManager;
+
 import fr.mines_nantes.atlanmod.ReadConfigurations;
 import fr.mines_nantes.atlanmod.monitoring.rmi.Client;
 import fr.mines_nantes.atlanmod.monitoring.rmi.MasterImpl;
@@ -31,6 +33,9 @@ public class MasterRunner {
 	private static MasterRunner mR;
 	private static boolean allMonitors = false;
 	private static boolean created = false;
+	private static boolean masterDeployed = false;
+	private static boolean appDeployed = false;
+	private static boolean broken = false;
 	
 	public static boolean addMonitorAddresses(String addr) throws NumberFormatException, IOException {
 		if (!monitorAddresses.add(addr)) {
@@ -140,11 +145,48 @@ public class MasterRunner {
 		while(!created) {
 			// While until all nodes are created
 		}
+		reactiveInBrokeCase();
 		return true;
+	}
+	
+	public static boolean deployMaster() throws NumberFormatException, IOException, InterruptedException {
+		MasterRunner.sendSignal("DEPLOYMASTER");
+		while(!masterDeployed) {
+			// While until all nodes are created
+		}
+		reactiveInBrokeCase();
+		return true;
+	}
+	
+	public static boolean deployApp() throws NumberFormatException, IOException, InterruptedException {
+		MasterRunner.sendSignal("DEPLOY");
+		while(!appDeployed) {
+			// While until all nodes are created
+		}
+		reactiveInBrokeCase();
+		return true;
+	}
+	
+	public static void reactiveInBrokeCase() {
+		if (broken) {
+			System.out.println("Do something, because the system is broken... ");
+		}
 	}
 	
 	public static void setCreated() {
 		created=true;
+	}
+	
+	public static void setAppMasterDeployed() {
+		masterDeployed=true;
+	}
+	
+	public static void setAppDeployed() {
+		appDeployed=true;
+	}
+	
+	public static void setBroken() {
+		broken = true;
 	}
 	
 	public static void main(String args[]) throws InterruptedException, IOException {
@@ -165,7 +207,7 @@ public class MasterRunner {
 			mR.setLogger();
 			mR.registryRMI();
 			mR.startMaster();
-			
+						
 			// Wait for monitors, then, execute the Auto scaling
 			while(!allMonitors) {
 				// wait
@@ -181,14 +223,16 @@ public class MasterRunner {
 			Distributor exec = new Distributor(autoScaleClass);
 			
 			// Kill Monitors
+			/*
 			try {
 				mR.sendSignal("KILL");
 			} catch (Exception e) {
 				// Nothing to do
 			}
+			*/
 			
 			// Kill Master
-			System.exit(0);
+			//System.exit(0);
 
 	}
 	

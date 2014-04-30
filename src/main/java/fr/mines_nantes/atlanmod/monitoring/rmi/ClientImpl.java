@@ -19,7 +19,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
 	private static final long serialVersionUID = 1L;
 	
 	public enum Signal {
-	    START, STOP, RESTART, KILL, CREATE
+	    START, STOP, RESTART, KILL, CREATE, DEPLOY, DEPLOYMASTER
 	}
 
 	public void receiveSrvMessage(String msg) throws RemoteException, InterruptedException {
@@ -40,8 +40,13 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
 				MonitorRunner.stopMonitor();
 				break;
 			case CREATE:
-				boolean b = MonitorRunner.createNode();
-				MonitorRunner.sendCreatedMsg(b);
+				MonitorRunner.sendCreatedMsg(MonitorRunner.createNode());
+				break;
+			case DEPLOY:
+				MonitorRunner.sendDeployAppMessage(MonitorRunner.deployApp());
+				break;
+			case DEPLOYMASTER:
+				MonitorRunner.sendMasterDeployed(MonitorRunner.deployMasterApp());
 				break;
 			}
 		} catch (Exception e) {

@@ -6,6 +6,30 @@
   <name>Cloud-Resources-Monitor</name>
   <description>An application to monitor and request resources in Cloud environments.</description>
   <build>
+      <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>2.1</version>
+        <executions>
+         <!-- 
+            <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/lib</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>false</overWriteSnapshots>
+              <overWriteIfNewer>true</overWriteIfNewer>
+            </configuration>
+          </execution>
+          -->
+        </executions>
+      </plugin>
+    </plugins>
+      
       <resources>
         <resource>
             <directory>src/main/resources</directory>
@@ -18,4 +42,24 @@
           
       </resources>
   </build>
+  <dependencies>
+      <dependency>
+		<groupId>org.apache.hadoop</groupId>
+		<artifactId>hadoop-core</artifactId>
+		<version>0.20.2</version>
+	 </dependency>
+     <!-- 
+     <dependency>
+		<groupId>org.apache.cassandra</groupId>
+		<artifactId>cassandra-all</artifactId>
+		<version>2.0.6</version>
+	</dependency>
+	-->
+	<!-- To create local virtual machines -->  
+	<dependency>
+		<groupId>org.virtualbox</groupId>
+		<artifactId>vboxjws</artifactId>
+		<version>4.1.4</version>
+	</dependency> 
+  </dependencies>
 </project>

@@ -13,8 +13,10 @@ for slave in $slaves
 do
 echo "Synchronazing files with $slave"
 scp ~/workspace/Giraffe-Project/monitoring.properties $remoteuser@$slave:$destinationfolder/
-scp ~/workspace/Giraffe-Project/target/*.jar $remoteuser@$slave:$destinationfolder/target/
+scp ~/workspace/Giraffe-Project/hadoop.properties $remoteuser@$slave:$destinationfolder/
+scp -r ~/workspace/Giraffe-Project/target/* $remoteuser@$slave:$destinationfolder/target/
 echo "Executing $salve now..."
+ssh root@$slave 'rm -rf /tmp/datanodedatadir/'
 ssh root@$slave 'cd ~/Giraffe-Project/ && java -cp ~/Giraffe-Project/target/Cloud-Resources-Monitor-0.0.1-SNAPSHOT.jar fr.mines_nantes.atlanmod.monitoring.MonitorRunner&' > /dev/null 2>&1 &
 echo "$slave OK"
 done
