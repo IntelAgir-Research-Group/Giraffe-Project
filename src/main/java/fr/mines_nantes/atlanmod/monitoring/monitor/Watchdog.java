@@ -1,4 +1,4 @@
-package fr.mines_nantes.atlanmod.monitoring;
+package fr.mines_nantes.atlanmod.monitoring.monitor;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -11,48 +11,30 @@ import java.util.logging.SimpleFormatter;
 
 import fr.mines_nantes.atlanmod.ReadConfigurations;
 
-public class Watchdog extends Thread {
+public class Watchdog {
 	
-	static private Logger LOGGER = Logger.getLogger(Watchdog.class.getName());
-	FileHandler logMonitor = null;
-	SimpleFormatter formatterTxt = null;
 	Long totalMem, freeMem;
 	Double pctFreeMem;
 	int sleepTime;
 	Integer relaxCountCPUUsage;
 	Integer relaxCountMemUsage;
+	double pctCPU;
+	double pctMem;
 	boolean stop = false;
 	boolean pause = false;
 	
-	///
-	// Logger
-	///
-	
-	public void setLogger() {
-		String level;
-		try {
-			level = ReadConfigurations.getPropertyValue("watchdog_log_level");
-			LOGGER.setLevel(Level.parse(level));
-			String logFile = ReadConfigurations.getPropertyValue("watchdog_log_file");
-			logMonitor = new FileHandler(logFile);
-			formatterTxt = new SimpleFormatter();
-		    logMonitor.setFormatter(formatterTxt);
-		    LOGGER.addHandler(logMonitor);
-		} catch (IOException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
-	}
 	
 	///
 	// Monitoring
 	///
 	
-	public void run() {
-		
+	public void startW() {
+		MonitorRunner.printLog("[WATCHDOG] Watchdog started.");
 		try {
 			relaxCountCPUUsage = Integer.valueOf(ReadConfigurations.getPropertyValue("monitor_relax_cpu"));
 			relaxCountMemUsage = Integer.valueOf(ReadConfigurations.getPropertyValue("monitor_relax_memory"));
+			pctCPU = Double.valueOf(ReadConfigurations.getPropertyValue("watchdog_pct_cpu"));
+			pctMem = Double.valueOf(ReadConfigurations.getPropertyValue("watchdog_pct_mem"));
 		} catch (NumberFormatException e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
@@ -60,6 +42,7 @@ public class Watchdog extends Thread {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
+		MonitorRunner.printLog("[WATCHDOG] Waiting for a start signal!");
 		while (!stop) {
 			
 			// Waiting (when are adding new nodes)
@@ -86,14 +69,14 @@ public class Watchdog extends Thread {
 			        } catch (Exception e) {
 			            value = e;
 			        }
-			       // LOGGER.info("[MONITOR] CPU usage: "+value);
+			        MonitorRunner.printLog("[WATCHDOG] CPU usage: "+value);
 			        // Bigger then 80%
-			        if ((Double) value > 0.80) {
+			        if ((Double) value > pctCPU) {
 			        //	LOGGER.warning("[MONITOR] CPU usage is higher then 80%");
 			        	relaxCountCPUUsage--;
 			        	// Here I used == to send the message only once.
 			        	if (relaxCountCPUUsage<=0){
-			        		LOGGER.severe("[MONITOR] Sending CPU altert message to Server");
+			        		MonitorRunner.printLog("[WATCHDOG] Sending CPU altert message to Server");
 			        		//MonitorRunner.sendCPUAlert("CPU usage is higher then 80%");
 			        		try {
 								MonitorRunner.sendCPUAlert();
@@ -125,14 +108,15 @@ public class Watchdog extends Thread {
 			        freeMem = (Long) value;
 			        if (totalMem>(long) 0) {
 				        pctFreeMem = (double)freeMem/(double)totalMem;
-				        LOGGER.info("[MONITOR] Memory usage: "+pctFreeMem+" | free: "+ freeMem + " total: "+totalMem);
-				        // Bigger then 80%
-				        if (pctFreeMem < 0.2) {
-				        	LOGGER.warning("[MONITOR] Memory usage is higher then 80%");
+				        MonitorRunner.printLog("[WATCHDOG] Memory usage: "+pctFreeMem+" | free: "+ freeMem + " total: "+totalMem);
+				        
+				        if (pctFreeMem < pctMem) {
+				        	
+				        	MonitorRunner.printLog("[WATCHDOG] Memory free is less then "+pctMem);
 				        	relaxCountMemUsage--;
 				        	// Here I used == to send the message only once.
 				        	if (relaxCountMemUsage<=0) {
-				        		LOGGER.severe("[MONITOR] Sending memory alert message to Server");
+				        		MonitorRunner.printLog("[WATCHDOG] Sending memory alert message to Server");
 				        		//MonitorRunner.sendMemAlert("Memory usage is higher then 80%");
 				        		try {
 									MonitorRunner.sendMemAlert();
@@ -159,7 +143,7 @@ public class Watchdog extends Thread {
 				e.printStackTrace();
 			}
 		}
-		LOGGER.info("[MONITOR] Stopping Monitoring.");
+		MonitorRunner.printLog("[WATCHDOG] Stopping Monitoring.");
 	}
 	
 	///
@@ -167,14 +151,21 @@ public class Watchdog extends Thread {
 	///
 	
 	public void stopWatchdog() {
+		MonitorRunner.printLog("[WATCHDOG] Stopping watchdog.");
 		stop = true;
 	}
 	
 	public void pauseWatchdog() {
+		MonitorRunner.printLog("[WATCHDOG] Pausing watchdog.");
 		pause = true;
 	}
 	
 	public void restartWatchdog() {
+		MonitorRunner.printLog("[WATCHDOG] Restarting watchdog.");
 		pause = false;
+	}
+	
+	public void teste() {
+		System.out.println("Testing...");
 	}
 }

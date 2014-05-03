@@ -1,10 +1,10 @@
-package fr.mines_nantes.atlanmod.monitoring.rmi;
+package fr.mines_nantes.atlanmod.monitoring.rmi.monitor;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 import fr.mines_nantes.atlanmod.annotations.Monitor;
-import fr.mines_nantes.atlanmod.monitoring.MonitorRunner;
+import fr.mines_nantes.atlanmod.monitoring.monitor.MonitorRunner;
 
 public class ClientImpl extends UnicastRemoteObject implements Client {
 
@@ -29,9 +29,11 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
 			switch(s) {
 			case START: 
 				MonitorRunner.setStart(true);
+				MonitorRunner.startWatch();
 				break;
 			case STOP:
-				MonitorRunner.pauseWatchdog();
+				//MonitorRunner.pauseWatchdog();
+				MonitorRunner.stopWatch();
 				break;
 			case RESTART:
 				MonitorRunner.restartWatchdog();

@@ -1,4 +1,4 @@
-package fr.mines_nantes.atlanmod.parser;
+package fr.mines_nantes.atlanmod.strategies.master;
 
 
 import java.io.IOException;
@@ -9,7 +9,7 @@ import fr.mines_nantes.atlanmod.annotations.Create;
 import fr.mines_nantes.atlanmod.annotations.Deploy;
 import fr.mines_nantes.atlanmod.annotations.Exec;
 import fr.mines_nantes.atlanmod.annotations.Monitor;
-import fr.mines_nantes.atlanmod.monitoring.MasterRunner;
+import fr.mines_nantes.atlanmod.monitoring.master.MasterRunner;
 
 public class Distributor {
 	
@@ -21,6 +21,7 @@ public class Distributor {
 	Object runner;
 	
 	public Distributor(String className) {
+		System.out.println("TESTING: "+className);
 		cName = className;
 		methodsClassify();
 		methodsSchedule();
@@ -119,9 +120,21 @@ public class Distributor {
 	    }	
 		
 		if (monitorMethods>0) {
-			
+			try {
+				MasterRunner.startMonitoring();
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-				
+	    
+		// All actions
 		for (Method m : execMethods) {
 			try {
                 m.invoke(runner);

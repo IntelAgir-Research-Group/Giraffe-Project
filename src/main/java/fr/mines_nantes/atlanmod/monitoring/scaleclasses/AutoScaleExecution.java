@@ -4,9 +4,12 @@ import fr.mines_nantes.atlanmod.annotations.Create;
 import fr.mines_nantes.atlanmod.annotations.Deploy;
 import fr.mines_nantes.atlanmod.annotations.Exec;
 import fr.mines_nantes.atlanmod.annotations.Monitor;
-import fr.mines_nantes.atlanmod.monitoring.MonitorRunner;
+import fr.mines_nantes.atlanmod.monitoring.frameworks.HDFS;
+import fr.mines_nantes.atlanmod.monitoring.monitor.MonitorRunner;
 
 public class AutoScaleExecution {
+	
+	HDFS hdfs = new HDFS();
 
 	@Create
 	public void createNodes() {
@@ -16,17 +19,13 @@ public class AutoScaleExecution {
 	@Deploy(sequence = 1)
 	public void deployMaster() {
 		MonitorRunner.printLog("[AUTO SCALE CLASS] Creating NameNode!");
-		//MonitorRunner.printLog("[AUTO SCALE CLASS] "+HDFSManager.test());
-		/*
 		try {
-			HDFSManager.startNameNode();
-		//	Thread.currentThread().wait(3000);
+			HDFS.startNameNode();
 		} catch (Exception e) {
 			MonitorRunner.printLog("[AUTO SCALE CLASS] Error: "+e.getMessage());
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		*/
 		MonitorRunner.printLog("[AUTO SCALE CLASS] NameNode created!");
 	}
 	

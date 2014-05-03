@@ -1,10 +1,10 @@
-package fr.mines_nantes.atlanmod.parser;
+package fr.mines_nantes.atlanmod.strategies.monitor;
 
 import java.lang.reflect.Method;
 
 import fr.mines_nantes.atlanmod.annotations.Create;
 import fr.mines_nantes.atlanmod.annotations.Deploy;
-import fr.mines_nantes.atlanmod.monitoring.MonitorRunner;
+import fr.mines_nantes.atlanmod.monitoring.monitor.MonitorRunner;
 
 public class Executor {
 	
@@ -62,7 +62,7 @@ public class Executor {
                     method.invoke(runner);
                     return true;
                 } catch (Exception e) {
-                	MonitorRunner.printLog("[EXECUTOR] Error:" + e.toString());
+                	MonitorRunner.printLog("[EXECUTOR] Error:" + e.getMessage());
                  	return false;
                 }
             } 

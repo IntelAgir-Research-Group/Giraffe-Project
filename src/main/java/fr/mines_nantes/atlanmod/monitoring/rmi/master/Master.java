@@ -1,4 +1,4 @@
-package fr.mines_nantes.atlanmod.monitoring.rmi;
+package fr.mines_nantes.atlanmod.monitoring.rmi.master;
 
 import java.io.IOException;
 import java.rmi.Remote;

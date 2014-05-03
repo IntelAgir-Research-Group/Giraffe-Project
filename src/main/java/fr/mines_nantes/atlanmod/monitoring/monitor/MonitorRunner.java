@@ -1,4 +1,4 @@
-package fr.mines_nantes.atlanmod.monitoring;
+package fr.mines_nantes.atlanmod.monitoring.monitor;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -14,7 +14,9 @@ import java.util.logging.SimpleFormatter;
 
 import fr.mines_nantes.atlanmod.ReadConfigurations;
 import fr.mines_nantes.atlanmod.monitoring.rmi.*;
-import fr.mines_nantes.atlanmod.parser.Executor;
+import fr.mines_nantes.atlanmod.monitoring.rmi.master.Master;
+import fr.mines_nantes.atlanmod.monitoring.rmi.monitor.ClientImpl;
+import fr.mines_nantes.atlanmod.strategies.monitor.Executor;
 
 public class MonitorRunner {
 	
@@ -60,10 +62,12 @@ public class MonitorRunner {
 	// Watchdog
 	///
 	
-	public void startWatch() {
+	public static void startWatch() {
+		LOGGER.info("[MONITOR] Starting to watch. / start = "+start);
 		wd = new Watchdog();
 		// Waiting until master send a signal to start to monitoring
 		while(!start) {
+			LOGGER.info("[MONITOR] Waiting for start signal.");
 			// waiting
 			try {
 				Thread.sleep(1000);
@@ -72,10 +76,10 @@ public class MonitorRunner {
 				e.printStackTrace();
 			}
 		}
-		wd.start();
+		wd.startW();
 	}
 	
-	public void stopWatch() {
+	public static void stopWatch() {
 		wd.stopWatchdog();
 	}
 	
@@ -98,12 +102,13 @@ public class MonitorRunner {
 	*/
 	
 	public static void setStart(boolean b) {
+		LOGGER.info("[MONITOR] Setting start as "+b);
 		start = b;
 	}
 	
 	public static void stopMonitor() throws InterruptedException {
 		// stop=true;
-		//stopWatch();
+		stopWatch();
 		System.exit(0);
 	}
 		
@@ -327,6 +332,5 @@ public class MonitorRunner {
 		//monR.startMonitor();
 		monR.setLogger();		
 		monR.registryRMI();
-		monR.startWatch();
 	}
 }

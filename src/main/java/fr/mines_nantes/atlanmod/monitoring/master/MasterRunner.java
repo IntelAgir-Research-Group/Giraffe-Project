@@ -1,4 +1,4 @@
-package fr.mines_nantes.atlanmod.monitoring;
+package fr.mines_nantes.atlanmod.monitoring.master;
 
 import java.io.IOException;
 import java.rmi.Naming;
@@ -12,13 +12,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import org.apache.hadoop.conf.Configuration;
 import org.virtualbox_4_1.VirtualBoxManager;
 
 import fr.mines_nantes.atlanmod.ReadConfigurations;
-import fr.mines_nantes.atlanmod.monitoring.rmi.Client;
-import fr.mines_nantes.atlanmod.monitoring.rmi.MasterImpl;
+import fr.mines_nantes.atlanmod.monitoring.frameworks.HDFS;
 import fr.mines_nantes.atlanmod.monitoring.rmi.RmiRegistryRunner;
-import fr.mines_nantes.atlanmod.parser.Distributor;
+import fr.mines_nantes.atlanmod.monitoring.rmi.master.MasterImpl;
+import fr.mines_nantes.atlanmod.monitoring.rmi.monitor.Client;
+import fr.mines_nantes.atlanmod.monitoring.scaleclasses.AutoScaleExecution;
+import fr.mines_nantes.atlanmod.strategies.master.Distributor;
 
 public class MasterRunner {
 	
@@ -36,6 +39,7 @@ public class MasterRunner {
 	private static boolean masterDeployed = false;
 	private static boolean appDeployed = false;
 	private static boolean broken = false;
+	private static boolean monitoring = false;
 	
 	public static boolean addMonitorAddresses(String addr) throws NumberFormatException, IOException {
 		if (!monitorAddresses.add(addr)) {
@@ -145,7 +149,7 @@ public class MasterRunner {
 		while(!created) {
 			// While until all nodes are created
 		}
-		reactiveInBrokeCase();
+		reactiveInBrokenCase();
 		return true;
 	}
 	
@@ -154,7 +158,7 @@ public class MasterRunner {
 		while(!masterDeployed) {
 			// While until all nodes are created
 		}
-		reactiveInBrokeCase();
+		reactiveInBrokenCase();
 		return true;
 	}
 	
@@ -163,11 +167,24 @@ public class MasterRunner {
 		while(!appDeployed) {
 			// While until all nodes are created
 		}
-		reactiveInBrokeCase();
+		reactiveInBrokenCase();
 		return true;
 	}
 	
-	public static void reactiveInBrokeCase() {
+	public static boolean startMonitoring() throws NumberFormatException, IOException, InterruptedException {
+		setMonitoring(false);
+		MasterRunner.sendSignal("START");
+		waitMonitoring();
+		return true;
+	}
+	
+	public static void waitMonitoring() {
+		while(!monitoring) {
+			// While until all nodes are created
+		}
+	}
+	
+	public static void reactiveInBrokenCase() {
 		if (broken) {
 			System.out.println("Do something, because the system is broken... ");
 		}
@@ -183,6 +200,11 @@ public class MasterRunner {
 	
 	public static void setAppDeployed() {
 		appDeployed=true;
+	}
+	
+	public static void setMonitoring(boolean b) {
+		LOGGER.info("[SERVER] Setting monitoring signal to "+b);
+		monitoring=b;
 	}
 	
 	public static void setBroken() {
@@ -207,7 +229,8 @@ public class MasterRunner {
 			mR.setLogger();
 			mR.registryRMI();
 			mR.startMaster();
-						
+			
+			
 			// Wait for monitors, then, execute the Auto scaling
 			while(!allMonitors) {
 				// wait
@@ -219,20 +242,29 @@ public class MasterRunner {
 				}
 			}
 			
-			String autoScaleClass = (String) ReadConfigurations.getPropertyValue("server_auto_scale_class");
-			Distributor exec = new Distributor(autoScaleClass);
+			//LOGGER.info("TESTING: "+(String) ReadConfigurations.getPropertyValue("server_auto_scale_class"));
+			
+			//AutoScaleExecution ae = new AutoScaleExecution();
+			//ae.deployMaster();
+			
+			//HDFSManager hdfs = new HDFSManager();
+			//hdfs.startNameNode();
+			
+			String autoScaleClassDist = (String) ReadConfigurations.getPropertyValue("server_auto_scale_class");
+			Distributor dist = new Distributor(autoScaleClassDist);
 			
 			// Kill Monitors
-			/*
+			
+			LOGGER.info("Stopping monitors.");
 			try {
 				mR.sendSignal("KILL");
 			} catch (Exception e) {
 				// Nothing to do
 			}
-			*/
 			
+			LOGGER.info("Stopping master.");
 			// Kill Master
-			//System.exit(0);
+			System.exit(0);
 
 	}
 	

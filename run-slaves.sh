@@ -17,7 +17,7 @@ scp ~/workspace/Giraffe-Project/hadoop.properties $remoteuser@$slave:$destinatio
 scp -r ~/workspace/Giraffe-Project/target/* $remoteuser@$slave:$destinationfolder/target/
 echo "Executing $salve now..."
 ssh root@$slave 'rm -rf /tmp/datanodedatadir/'
-ssh root@$slave 'cd ~/Giraffe-Project/ && java -cp ~/Giraffe-Project/target/Cloud-Resources-Monitor-0.0.1-SNAPSHOT.jar fr.mines_nantes.atlanmod.monitoring.MonitorRunner&' > /dev/null 2>&1 &
+ssh root@$slave 'cd ~/Giraffe-Project/ && java -cp .:./target/lib/:./target/Cloud-Resources-Monitor-0.0.1-SNAPSHOT.jar:./target/lib/hadoop-core-0.20.2.jar fr.mines_nantes.atlanmod.monitoring.monitor.MonitorRunner&' > /dev/null 2>&1 &
 echo "$slave OK"
 done
 

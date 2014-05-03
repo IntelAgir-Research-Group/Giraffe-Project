@@ -1,7 +1,9 @@
-package fr.mines_nantes.atlanmod.monitoring;
+package fr.mines_nantes.atlanmod.strategies.master;
 
 import java.io.IOException;
 import java.util.Date;
+
+import fr.mines_nantes.atlanmod.monitoring.master.MasterRunner;
 
 public class Adviser {
 	
@@ -22,6 +24,7 @@ public class Adviser {
 			try {
 				// Sending a pause signal to the monitors
 				MasterRunner.sendSignal("STOP");
+				MasterRunner.setMonitoring(true);
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -35,16 +38,23 @@ public class Adviser {
 	
 	// Memory alerts
 	public static void memAlerts() throws InterruptedException {
+		System.out.println("Memory alert received!");
 		Date date = new Date();
 		long timeStamp = date.getTime();
 		// Improve that value (15 seconds? / Get from properties file)
-		if (((timeStamp-lastMemTimestamp)/1000)<=15) {
+		
+		////                   ////
+		// Forcing to request... //
+		////                   ////
+		
+		if (((timeStamp-lastMemTimestamp)/1000)<=60) {
 			// Alert to create a new node
 			// 2 alerts from different nodes
 			System.out.println("Requesting more memory...");
 			try {
 				// Sending a pause signal to the monitors
 				MasterRunner.sendSignal("STOP");
+				MasterRunner.setMonitoring(true);
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -60,4 +70,5 @@ public class Adviser {
 	public static void diskAlerts() {
 		
 	}
+	
 }

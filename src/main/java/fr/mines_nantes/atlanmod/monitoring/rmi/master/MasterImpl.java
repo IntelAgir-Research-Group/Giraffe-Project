@@ -1,4 +1,4 @@
-package fr.mines_nantes.atlanmod.monitoring.rmi;
+package fr.mines_nantes.atlanmod.monitoring.rmi.master;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -8,8 +8,8 @@ import java.util.logging.Logger;
 
 import com.sun.org.apache.commons.logging.Log;
 
-import fr.mines_nantes.atlanmod.monitoring.Adviser;
-import fr.mines_nantes.atlanmod.monitoring.MasterRunner;
+import fr.mines_nantes.atlanmod.monitoring.master.MasterRunner;
+import fr.mines_nantes.atlanmod.strategies.master.Adviser;
 
 /**
  * 
@@ -41,7 +41,7 @@ public class MasterImpl extends UnicastRemoteObject implements Master {
 	}
 
 	public synchronized Boolean receiveMemAlert() throws RemoteException, InterruptedException {
-		Adviser.cpuAlerts();
+		Adviser.memAlerts();
 		return true;
 	}
 	

@@ -1,4 +1,4 @@
-package fr.mines_nantes.atlanmod.monitoring.scaleclasses;
+package fr.mines_nantes.atlanmod.monitoring.frameworks;
 
 /**
  * @author albonico
@@ -14,7 +14,8 @@ import org.apache.hadoop.hdfs.server.datanode.DataNode;
 import org.apache.hadoop.conf.Configuration;
 
 
-import fr.mines_nantes.atlanmod.monitoring.MonitorRunner;
+
+import fr.mines_nantes.atlanmod.monitoring.monitor.MonitorRunner;
 
 /*
  * Java Classes
@@ -22,24 +23,14 @@ import fr.mines_nantes.atlanmod.monitoring.MonitorRunner;
 import java.io.IOException;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.rmi.RemoteException;
 import java.util.logging.Logger;
 import java.util.logging.FileHandler;
-import java.util.Map;
 import java.util.Properties;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.List;
-import java.util.logging.Level;
 
-public class HDFSManager {
+public class HDFS {
 
     // PeerUnit vars
-    protected static Logger log = Logger.getLogger(HDFSManager.class.getName());
+    protected static Logger log = Logger.getLogger(HDFS.class.getName());
     protected static FileHandler fh;
 
     protected static NameNode NNode;
@@ -54,27 +45,30 @@ public class HDFSManager {
         log.info("Reading Hadoop properties!");
         
         Configuration cfg = new Configuration();
-        
+                
         Properties properties = new Properties();
         File file = new File("hadoop.properties");
-        FileInputStream fis = null;
-        fis = new FileInputStream(file);
+        FileInputStream fis = new FileInputStream(file);
         properties.load(fis);
+        
+        String h = properties.getProperty("hadoop.namenode");
+        String p = properties.getProperty("hadoop.namenode.port");
+        
+        cfg.set("fs.default.name", "hdfs://"+h+":"+p);
 
-        /**
-         * JobTracker and NameNode Properties
-         */
-         properties.getProperty("hadoop.namenode");
-        cfg.set("hadoop.namenode", properties.getProperty("hadoop.namenode"));
-        cfg.set("hadoop.namenode.port", properties.getProperty("hadoop.namenode.port"));
+        // cfg.set("hadoop.namenode", properties.getProperty("hadoop.namenode"));
+        // cfg.set("hadoop.namenode.port", properties.getProperty("hadoop.namenode.port"));
         cfg.set("hadoop.dir.name", properties.getProperty("hadoop.dir.name"));
         cfg.set("hadoop.dir.data", properties.getProperty("hadoop.dir.data"));
         cfg.set("hadoop.dir.tmp", properties.getProperty("hadoop.dir.tmp"));
+        cfg.set("dfs.name.dir", properties.getProperty("dfs.name.dir"));
+        cfg.set("dfs.data.dir", properties.getProperty("dfs.data.dir"));
         cfg.set("hadoop.dir.secnn", properties.getProperty("hadoop.dir.secnn"));
         cfg.set("hadoop.dfs.replication", properties.getProperty("hadoop.dfs.replication"));
         cfg.set("hadoop.java.options", properties.getProperty("hadoop.java.options"));
         cfg.set("mapred.child.java.opts", properties.getProperty("mapred.child.java.opts"));
-    
+        cfg.set("hadoop.dir.log", properties.getProperty("hadoop.dir.log"));
+        
         return cfg;
     }
 
@@ -102,25 +96,38 @@ public class HDFSManager {
    
     // NameNode
     public static void startNameNode() {
+    	
         MonitorRunner.printLog("[HDFS MANAGER] STARTING");
-        //Thread tNN = new Thread() {
-	    //	public void run() {
-	          try {
-	              readPropertiesHadoop();
-	              Configuration conf = readPropertiesHadoop();
-	              NameNode.format(conf);
-	              NNode = new NameNode(conf);
-	             //   Thread.sleep(5000);
-	          } catch (Exception e) {
-	          	MonitorRunner.printLog("[HDFS MANAGER]  Error: "+e.getMessage());
-	          }
-	      //  }
-        //};
-        //tNN.start();
+        Thread tNN = new Thread() {
+	  	public void run() {
+          	Configuration conf;
+			try {
+			 	conf = readPropertiesHadoop();
+				NameNode.format(conf);
+		        System.out.println("Name: "+conf.get("hadoop.namenode"));
+				NNode = new NameNode(conf);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+			}
+	  	}
+        };
+        
+        tNN.start();  
+        
+        try {
+			tNN.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+		}
+        
+        MonitorRunner.printLog("[HDFS MANAGER] STARTED");
     }
     
     // DataNode
-	static Thread startDataNode() {
+	static void startDataNode() {
+		
         Thread tDN = new Thread() {
         	public void run() {
 	            try {
@@ -133,7 +140,13 @@ public class HDFSManager {
 	            }
         	}
         };
-        return tDN;
+        
+        tDN.start();
+        
+        try {
+			tDN.join();
+		} catch (InterruptedException e) {
+		}
     }
 	
 	static String test() {
