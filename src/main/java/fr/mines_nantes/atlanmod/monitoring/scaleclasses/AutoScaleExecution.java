@@ -1,6 +1,7 @@
 package fr.mines_nantes.atlanmod.monitoring.scaleclasses;
 
 import fr.mines_nantes.atlanmod.annotations.Create;
+import fr.mines_nantes.atlanmod.annotations.CreateVM;
 import fr.mines_nantes.atlanmod.annotations.Deploy;
 import fr.mines_nantes.atlanmod.annotations.Exec;
 import fr.mines_nantes.atlanmod.annotations.Monitor;
@@ -16,7 +17,7 @@ public class AutoScaleExecution {
 		MonitorRunner.printLog("[AUTO SCALE CLASS] Creating a new node!");
 	}
 	
-	@Deploy(sequence = 1)
+	@Deploy(type = "master", monitor=0)
 	public void deployMaster() {
 		MonitorRunner.printLog("[AUTO SCALE CLASS] Creating NameNode!");
 		try {
@@ -29,29 +30,35 @@ public class AutoScaleExecution {
 		MonitorRunner.printLog("[AUTO SCALE CLASS] NameNode created!");
 	}
 	
-	/*
-	@Deploy(sequence = 2)
+	@Deploy(type = "slave", monitor=-2)
 	public void deploySlave() {
 		MonitorRunner.printLog("[AUTO SCALE CLASSE] Create DataNode!");
-		Thread dn = HDFSManager.startDataNode();
-		dn.start();
-		try {
-			Thread.currentThread().sleep(5000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		HDFS.startDataNode();
 	}
-	*/
 	
-	@Monitor
+	@Monitor 
+	// Crate the monitoring specification here or remove
 	public void monitorNodes() {
 		MonitorRunner.printLog("[AUTO SCALE CLASS] Start to monitoring!");
 	}
 	
-	@Exec(sequence = 1)
+	@Exec(sequence=1, monitor=-2)
 	public void action1() {
 		MonitorRunner.printLog("[AUTO SCALE CLASS] Action 1!");
 	}
+	
+	@Exec(sequence=2, monitor=-2)
+	public void action2() {
+		MonitorRunner.printLog("[AUTO SCALE CLASS] Action 2!");
+	}
+	
+	@Exec(sequence=3, monitor=-2)
+	public void action3() {
+		MonitorRunner.printLog("[AUTO SCALE CLASS] Action 3!");
+	}
 
+	@CreateVM
+	public void cVM() {
+		
+	}
 }

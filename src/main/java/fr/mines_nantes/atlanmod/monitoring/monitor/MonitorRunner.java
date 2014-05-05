@@ -1,6 +1,8 @@
 package fr.mines_nantes.atlanmod.monitoring.monitor;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.AlreadyBoundException;
@@ -35,6 +37,19 @@ public class MonitorRunner {
 	private static Executor exec;
 	
 	///
+	// ID
+	///
+	public static int ID = 0;
+	
+	public static int getID() {
+		return ID;
+	}
+	
+	public static void setID(int id) {
+		ID = id;
+	}
+	
+	///
 	// Logger
 	///
 	public void setLogger() {
@@ -62,21 +77,48 @@ public class MonitorRunner {
 	// Watchdog
 	///
 	
-	public static void startWatch() {
+	public static void startWatchdog() {
+		//wd.startW();
+		wd.startW();
+	}
+	
+	public static void createWatchdog() {
 		LOGGER.info("[MONITOR] Starting to watch. / start = "+start);
-		wd = new Watchdog();
-		// Waiting until master send a signal to start to monitoring
-		while(!start) {
-			LOGGER.info("[MONITOR] Waiting for start signal.");
-			// waiting
+	
+		//for (int i=0; i<=10; i++) {
+			
+		//	LOGGER.info("Testing :"+ID+" i ");
+			
+		/*
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
 		}
-		wd.startW();
+		*/
+		
+		Watchdog.startW();
+		//LOGGER.info("[MONITOR] Watching. ");
+		//wd.pauseWatchdog();
+		//wd.startW();
+		
+		// Waiting until master send a signal to start to monitoring
+		/*
+		while(!start) {
+			LOGGER.info("[MONITOR] Waiting for start signal.");
+			// waiting
+			try {
+				Thread.currentThread().sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		*/
+		//wd.startW();
 	}
 	
 	public static void stopWatch() {
@@ -244,7 +286,7 @@ public class MonitorRunner {
 			e.printStackTrace();
 		}
 	}
-	
+/*	
 	public static void sendMasterDeployed(boolean b) {
 		srvConnect("Server");
 		try {
@@ -259,7 +301,9 @@ public class MonitorRunner {
 			e.printStackTrace();
 		}
 	}
+*/
 	
+	/*
 	public static void sendDeployAppMessage(boolean b) {
 		srvConnect("Server");
 		try {
@@ -272,6 +316,14 @@ public class MonitorRunner {
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}	
+	}
+	*/
+	
+	public static void sendExecuted(boolean b) throws RemoteException, InterruptedException {
+		srvConnect("Server");
+		if (!SrvRMI.receiveExecuted(b)) {
+		    LOGGER.severe("[MONITOR] Client: Remote sendExecuted() call failed.");
 		}
 	}
 	
@@ -322,13 +374,29 @@ public class MonitorRunner {
 		}
 	}
 	
+	public static boolean execAction(int seq) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		executor();
+		LOGGER.info("[MONITOR] Executing action sequence "+seq);
+		if (exec.execAction(seq)){
+			LOGGER.info("[MONITOR] Action executed");
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public static boolean deployMaster() {
+		exec.execDeployMaster();
+		return true;
+	}
+	
 	///
 	// Starting Monitor
 	///
 	
 	public static void main(String args[]) throws NumberFormatException, IOException, AlreadyBoundException {
 		MonitorRunner monR = new MonitorRunner();
-		monitorName = "Monitor"+monR.hashCode();
+		//monitorName = "Monitor"+monR.hashCode();
 		//monR.startMonitor();
 		monR.setLogger();		
 		monR.registryRMI();

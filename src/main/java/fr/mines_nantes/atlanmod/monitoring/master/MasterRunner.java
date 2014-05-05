@@ -1,6 +1,7 @@
 package fr.mines_nantes.atlanmod.monitoring.master;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.rmi.Naming;
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
@@ -40,20 +41,37 @@ public class MasterRunner {
 	private static boolean appDeployed = false;
 	private static boolean broken = false;
 	private static boolean monitoring = false;
+	private static boolean executed = false;
 	
-	public static boolean addMonitorAddresses(String addr) throws NumberFormatException, IOException {
-		if (!monitorAddresses.add(addr)) {
-			LOGGER.severe("[SERVER] Error adding monitor to the list");
-			return false;
-		} else {
-			if (Integer.valueOf(ReadConfigurations.getPropertyValue("server_max_monitors")).equals(monitorAddresses.size())) {
-				allMonitors=true;
-				//MasterRunner.sendSignal("START");
-				return true;
-			} else {
-				return false;
-			}
+	public static boolean addMonitorAddresses(int monitorID, String addr) throws NumberFormatException, IOException {
+		monitorAddresses.add(monitorID, addr);
+		LOGGER.info("[SERVER] Monitor added to list");
+		//LOGGER.severe("[SERVER] Error adding monitor to the list");
+			
+		// Sending id to Monitor
+		
+		String host = addr;
+		int port = Integer.valueOf(ReadConfigurations.getPropertyValue("monitor_port"));
+		
+		clientRMI = monitorConnect("Monitor", host, port);
+		
+		try {
+			clientRMI.receiveID(monitorID);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
+		LOGGER.info("[SERVER] Monitor ID sent");
+		
+		if (Integer.valueOf(ReadConfigurations.getPropertyValue("server_max_monitors")).equals(monitorAddresses.size())) {
+			allMonitors=true;
+			//MasterRunner.sendSignal("START");
+			return true;
+		} else {
+			return false;
+		}
+		
 	}
 	
 	public void setLogger() {
@@ -118,19 +136,34 @@ public class MasterRunner {
 	        LOGGER.warning("[SERVER] Exception thrown looking up " + monitorURL);
 	        LOGGER.warning("[SERVER] Error message: "+ e.getMessage());
         }
+	    LOGGER.info("[SERVER] Connected to: "+monitorURL); 
 	    return clientRMI;
 	}
-	
 	
 	public static void sendSignal(String signal) throws NumberFormatException, IOException, InterruptedException {
 		int port = Integer.valueOf(ReadConfigurations.getPropertyValue("monitor_port"));
 		int count;
 		String slave;
+		//for (count=0; count<monitorAddresses.size();  count++) {
 		for (count=0; count<monitorAddresses.size();  count++) {
-			  slave = monitorAddresses.get(count);
-		      clientRMI = monitorConnect("Monitor", slave, port);
-		      clientRMI.receiveSrvMessage(signal);
+			slave = monitorAddresses.get(count);
+		    clientRMI = monitorConnect("Monitor", slave, port);
+		    System.out.println("[SERVER] Sending the "+signal+" signal to "+slave+" | Monitors total: "+monitorAddresses.size());
+		    clientRMI.receiveSrvMessage(signal);
+			System.out.println("[SERVER] Signal sent to "+slave);
 		}
+		/*
+		if (signal.equals("START")) {
+			for (count=0; count<monitorAddresses.size();  count++) {
+				  slave = monitorAddresses.get(count);
+				  clientRMI = monitorConnect("Monitor", slave, port);
+				  LOGGER.info("[SERVER] Starting to watch - "+slave);
+				  clientRMI.setWatchSignal();
+				  LOGGER.info("[SERVER] Watching - "+slave);
+				  
+			}
+		}
+		*/
 	}
 
 	public static void sendBroadcastMessage(String msg) throws IOException, InterruptedException {
@@ -144,6 +177,39 @@ public class MasterRunner {
 		}
 	}
 	
+	public static void sendMasterDeploy() throws IOException, InterruptedException {
+		int port = Integer.valueOf(ReadConfigurations.getPropertyValue("monitor_port"));
+		int count;
+		String slave;
+		for (count=0; count<monitorAddresses.size();  count++) {
+			  slave = monitorAddresses.get(count);
+		      clientRMI = monitorConnect("Monitor", slave, port);
+		      clientRMI.deployMaster();
+		}
+	}
+	
+	public static void sendAppDeploy() throws NumberFormatException, IOException, InterruptedException {
+		int port = Integer.valueOf(ReadConfigurations.getPropertyValue("monitor_port"));
+		int count;
+		String slave;
+		for (count=0; count<monitorAddresses.size();  count++) {
+			  slave = monitorAddresses.get(count);
+		      clientRMI = monitorConnect("Monitor", slave, port);
+		      clientRMI.deployApp();
+		}
+	}
+	
+	public static void sendAction(int seq) throws NumberFormatException, IOException, InterruptedException {
+		int port = Integer.valueOf(ReadConfigurations.getPropertyValue("monitor_port"));
+		int count;
+		String slave;
+		for (count=0; count<monitorAddresses.size();  count++) {
+			  slave = monitorAddresses.get(count);
+		      clientRMI = monitorConnect("Monitor", slave, port);
+		      clientRMI.execAction(seq);
+		}
+	}
+	
 	public static boolean createNodes() throws NumberFormatException, IOException, InterruptedException {
 		MasterRunner.sendSignal("CREATE");
 		while(!created) {
@@ -153,28 +219,49 @@ public class MasterRunner {
 		return true;
 	}
 	
-	public static boolean deployMaster() throws NumberFormatException, IOException, InterruptedException {
-		MasterRunner.sendSignal("DEPLOYMASTER");
-		while(!masterDeployed) {
+	public static boolean deployMaster() {
+		try {
+			MasterRunner.sendMasterDeploy();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		while(!executed) {
+			// While until all nodes are created
+		}
+		executed = false;
+		reactiveInBrokenCase();
+		return true;
+	}
+	
+	public static boolean deployApp() throws NumberFormatException, IOException, InterruptedException {
+	//	MasterRunner.sendSignal("DEPLOY");
+		LOGGER.info("[SERVER] Executing app deploy");
+		MasterRunner.sendAppDeploy();
+		while(!executed) {
 			// While until all nodes are created
 		}
 		reactiveInBrokenCase();
 		return true;
 	}
 	
-	public static boolean deployApp() throws NumberFormatException, IOException, InterruptedException {
-		MasterRunner.sendSignal("DEPLOY");
-		while(!appDeployed) {
+	public static boolean execAction(int seq) throws NumberFormatException, IOException, InterruptedException {
+		LOGGER.info("[SERVER] Executing action");
+		MasterRunner.sendAction(seq);
+		MasterImpl.setExecCount(0);
+		while(!executed) {
 			// While until all nodes are created
 		}
-		reactiveInBrokenCase();
 		return true;
 	}
 	
 	public static boolean startMonitoring() throws NumberFormatException, IOException, InterruptedException {
 		setMonitoring(false);
 		MasterRunner.sendSignal("START");
-		waitMonitoring();
+		// waitMonitoring();
 		return true;
 	}
 	
@@ -211,6 +298,11 @@ public class MasterRunner {
 		broken = true;
 	}
 	
+	public static void setExecuted() {
+		LOGGER.info("[SERVER] Setting executed to true");
+		executed = true;
+	}
+	
 	public static void main(String args[]) throws InterruptedException, IOException {
 		
 		
@@ -232,6 +324,7 @@ public class MasterRunner {
 			
 			
 			// Wait for monitors, then, execute the Auto scaling
+			
 			while(!allMonitors) {
 				// wait
 				try {
@@ -253,8 +346,8 @@ public class MasterRunner {
 			String autoScaleClassDist = (String) ReadConfigurations.getPropertyValue("server_auto_scale_class");
 			Distributor dist = new Distributor(autoScaleClassDist);
 			
+			/*
 			// Kill Monitors
-			
 			LOGGER.info("Stopping monitors.");
 			try {
 				mR.sendSignal("KILL");
@@ -265,6 +358,7 @@ public class MasterRunner {
 			LOGGER.info("Stopping master.");
 			// Kill Master
 			System.exit(0);
+			*/
 
 	}
 	

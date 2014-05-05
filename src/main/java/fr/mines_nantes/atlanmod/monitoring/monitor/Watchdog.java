@@ -11,24 +11,30 @@ import java.util.logging.SimpleFormatter;
 
 import fr.mines_nantes.atlanmod.ReadConfigurations;
 
-public class Watchdog {
+public class Watchdog extends Thread {
 	
-	Long totalMem, freeMem;
-	Double pctFreeMem;
-	int sleepTime;
-	Integer relaxCountCPUUsage;
-	Integer relaxCountMemUsage;
-	double pctCPU;
-	double pctMem;
-	boolean stop = false;
-	boolean pause = false;
-	
+	static Long totalMem;
+	static Long freeMem;
+	static Double pctFreeMem;
+	static int sleepTime;
+	static Integer relaxCountCPUUsage;
+	static Integer relaxCountMemUsage;
+	static double pctCPU;
+	static double pctMem;
+	static boolean stop = false;
+	static boolean pause = false;
 	
 	///
 	// Monitoring
 	///
 	
-	public void startW() {
+	public static void startW() {
+		//Thread.currentThread().yield();
+		
+		new Thread() {
+		
+		public void run() {
+			
 		MonitorRunner.printLog("[WATCHDOG] Watchdog started.");
 		try {
 			relaxCountCPUUsage = Integer.valueOf(ReadConfigurations.getPropertyValue("monitor_relax_cpu"));
@@ -42,9 +48,8 @@ public class Watchdog {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
-		MonitorRunner.printLog("[WATCHDOG] Waiting for a start signal!");
-		while (!stop) {
-			
+		
+		while (!stop) {	
 			// Waiting (when are adding new nodes)
 			while (pause) {
 				try {
@@ -129,9 +134,10 @@ public class Watchdog {
 			        }
 			    }
 			  }
+			
 			try {
 				sleepTime = Integer.valueOf(ReadConfigurations.getPropertyValue("watchdog_sleep_time"));
-				Thread.currentThread().sleep(sleepTime);
+				Thread.sleep(sleepTime);
 			} catch (NumberFormatException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -143,6 +149,8 @@ public class Watchdog {
 				e.printStackTrace();
 			}
 		}
+		}
+		}.start();
 		MonitorRunner.printLog("[WATCHDOG] Stopping Monitoring.");
 	}
 	
@@ -150,22 +158,22 @@ public class Watchdog {
 	// Signals from MonitorRunner
 	///
 	
-	public void stopWatchdog() {
+	public static void stopWatchdog() {
 		MonitorRunner.printLog("[WATCHDOG] Stopping watchdog.");
 		stop = true;
 	}
 	
-	public void pauseWatchdog() {
+	public static void pauseWatchdog() {
 		MonitorRunner.printLog("[WATCHDOG] Pausing watchdog.");
 		pause = true;
 	}
 	
-	public void restartWatchdog() {
+	public static void restartWatchdog() {
 		MonitorRunner.printLog("[WATCHDOG] Restarting watchdog.");
 		pause = false;
 	}
 	
-	public void teste() {
+	public static void teste() {
 		System.out.println("Testing...");
 	}
 }

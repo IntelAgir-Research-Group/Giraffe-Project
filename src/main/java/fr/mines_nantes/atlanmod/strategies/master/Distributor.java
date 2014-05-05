@@ -4,24 +4,26 @@ package fr.mines_nantes.atlanmod.strategies.master;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.lang.annotation.Annotation;
 
 import fr.mines_nantes.atlanmod.annotations.Create;
 import fr.mines_nantes.atlanmod.annotations.Deploy;
 import fr.mines_nantes.atlanmod.annotations.Exec;
 import fr.mines_nantes.atlanmod.annotations.Monitor;
 import fr.mines_nantes.atlanmod.monitoring.master.MasterRunner;
+import fr.mines_nantes.atlanmod.monitoring.rmi.master.MasterImpl;
 
 public class Distributor {
 	
 	String cName;
 	int createMethods = 0;
-	ArrayList<Method> deployMethods = new ArrayList<Method>();
+	int deploySlaveMethods = 0;
+	int deployMasterMethod = 0;
 	int monitorMethods = 0;
 	ArrayList<Method> execMethods = new ArrayList<Method>();
 	Object runner;
 	
 	public Distributor(String className) {
-		System.out.println("TESTING: "+className);
 		cName = className;
 		methodsClassify();
 		methodsSchedule();
@@ -29,11 +31,12 @@ public class Distributor {
 	
 	public void methodsClassify() {
 		try {
+			System.out.println("Getting methods/annotations from class "+cName);
 			runner = Class.forName(cName).newInstance();
 			
 			//AutoScaleExecution runner = new AutoScaleExecution();
 	        Method[] methods = runner.getClass().getMethods();
-
+	        	        
 	        for (Method method : methods) {
 	            Create c = method.getAnnotation(Create.class);
 	            if (c != null) {
@@ -41,7 +44,11 @@ public class Distributor {
 	            } else {
 	            	Deploy d = method.getAnnotation(Deploy.class);
 		            if (d != null) {
-		                deployMethods.add(method);
+		            	if (d.type().equals("master")) {
+		            		deployMasterMethod=1;
+		            	} else {
+		            		deploySlaveMethods=1;
+		            	}
 		            } else {
 		            	Monitor m = method.getAnnotation(Monitor.class);
 			            if (m != null) {
@@ -87,38 +94,31 @@ public class Distributor {
 			}
 		}
 			
-		if (deployMethods.size() > 1) {
-			// The first monitor will execute only the first method
-			// For now, only 2 deploy methods are possible
-			int count = 1;
-			for (Method m : deployMethods) {
-				try {
-					if (count==1){
-						MasterRunner.deployMaster();
-					} else {
-						MasterRunner.deployApp();
-						break;
-					}
-				} catch (NumberFormatException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				count++;
-			}
-		} else {
+		// Deploying Master
+		if (deployMasterMethod > 0) {
+			System.out.println("Setting count as 0");
+			MasterImpl.setExecCount(0);
+			MasterRunner.deployMaster();
+		}
+		
+		// Deploying Slaves
+		if (deploySlaveMethods > 0) {
+			MasterImpl.setExecCount(0);
 			try {
 				MasterRunner.deployApp();
-			} catch (Exception e ){
-				System.out.println("Error: "+e.getMessage());
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-	    }	
+		}
 		
+		// Starting monitors
 		if (monitorMethods>0) {
 			try {
 				MasterRunner.startMonitoring();
@@ -136,11 +136,20 @@ public class Distributor {
 	    
 		// All actions
 		for (Method m : execMethods) {
+			Exec e = m.getAnnotation(Exec.class);
+			int seq = e.sequence();
 			try {
-                m.invoke(runner);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+				MasterRunner.execAction(seq);
+			} catch (NumberFormatException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		
 	}

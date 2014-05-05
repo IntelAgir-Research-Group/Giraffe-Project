@@ -26,13 +26,28 @@ public class MasterImpl extends UnicastRemoteObject implements Master {
 	private static final long serialVersionUID = 1L;
 	private static int countCreated = 0;
 	private static int countDeployed = 0;
+	private static int execCount = 0;
+	private static int executedCount = 0;
+	
+	// ID Monitors
+	private static int monitorsCount = -1;
+	
+	public static void setExecCount(int size) {
+		executedCount = 0;
+		if (size == 0) {
+			execCount = monitorsCount+1;
+		} else {
+			execCount = size;
+		}
+	}
 
 	public MasterImpl() throws RemoteException {
         super();
     }
      
     public synchronized Boolean receiveMonitorNames(String a) throws NumberFormatException, IOException {
-    	return MasterRunner.addMonitorAddresses(a);
+    	monitorsCount++;
+    	return MasterRunner.addMonitorAddresses(monitorsCount, a);
     }
 
 	public synchronized Boolean receiveCPUAlert() throws RemoteException, InterruptedException {
@@ -57,11 +72,16 @@ public class MasterImpl extends UnicastRemoteObject implements Master {
 		}
 	}
 	
+	/*
 	public synchronized Boolean receiveDeployAppMasterMessage(boolean md) throws RemoteException, InterruptedException {
 		if (md == false){
 			return false;
 		} else {
-			MasterRunner.setAppMasterDeployed();
+			executedCount++;
+			if (executedCount == execCount) {
+				execCount = 0;
+				MasterRunner.setAppMasterDeployed();
+			}
 			return true;
 		}
 	}
@@ -79,5 +99,21 @@ public class MasterImpl extends UnicastRemoteObject implements Master {
 		}
 		
 		return true;
+	}
+	*/
+	
+	public synchronized Boolean receiveExecuted(boolean exec) throws RemoteException, InterruptedException {
+		if (exec == false){
+			return false;
+		} else {
+			System.out.println("Executed: "+executedCount);
+			System.out.println("Expected: "+execCount);
+			executedCount++;
+			if (executedCount == execCount) {
+				execCount = 0;
+				MasterRunner.setExecuted();
+			}
+			return true;
+		}
 	}
 }

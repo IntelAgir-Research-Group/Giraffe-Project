@@ -9,5 +9,8 @@ import java.lang.annotation.Target;
 @Retention(value = RetentionPolicy.RUNTIME)
 
 public @interface Deploy {
-	int sequence();
+	// master / slave
+	public String type();
+	// 0=node0, -1=all nodes less 0, -2=all nodes
+	public int monitor();
 }

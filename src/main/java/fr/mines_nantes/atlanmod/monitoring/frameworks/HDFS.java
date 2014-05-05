@@ -126,7 +126,7 @@ public class HDFS {
     }
     
     // DataNode
-	static void startDataNode() {
+	public static void startDataNode() {
 		
         Thread tDN = new Thread() {
         	public void run() {

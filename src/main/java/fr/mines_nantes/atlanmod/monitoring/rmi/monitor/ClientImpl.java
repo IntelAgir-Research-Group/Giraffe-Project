@@ -1,8 +1,11 @@
 package fr.mines_nantes.atlanmod.monitoring.rmi.monitor;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+import fr.mines_nantes.atlanmod.annotations.Deploy;
 import fr.mines_nantes.atlanmod.annotations.Monitor;
 import fr.mines_nantes.atlanmod.monitoring.monitor.MonitorRunner;
 
@@ -19,39 +22,77 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
 	private static final long serialVersionUID = 1L;
 	
 	public enum Signal {
-	    START, STOP, RESTART, KILL, CREATE, DEPLOY, DEPLOYMASTER
+	    START, STOP, RESTART, KILL, CREATE
+	}
+	
+	public synchronized void receiveID(int id) throws RemoteException, InterruptedException {
+		MonitorRunner.printLog("[MONITOR] ID received: "+id);
+		MonitorRunner.setID(id);
+		MonitorRunner.printLog("[MONITOR] ID setted");
+	}
+	
+	public Boolean setWatchSignal() throws RemoteException, InterruptedException {
+		MonitorRunner.startWatchdog();
+		return true;
 	}
 
-	public void receiveSrvMessage(String msg) throws RemoteException, InterruptedException {
+	public Boolean receiveSrvMessage(String msg) throws RemoteException, InterruptedException {
 		MonitorRunner.printLog("[MONITOR] Message received: "+msg);
 		Signal s = Signal.valueOf(msg);
-		try {
+		
 			switch(s) {
 			case START: 
-				MonitorRunner.setStart(true);
-				MonitorRunner.startWatch();
-				break;
+				//MonitorRunner.setStart(true);
+				MonitorRunner.createWatchdog();
+				return true;
 			case STOP:
 				//MonitorRunner.pauseWatchdog();
 				MonitorRunner.stopWatch();
-				break;
+				return true;
 			case RESTART:
 				MonitorRunner.restartWatchdog();
-				break;
+				return true;
 			case KILL:
 				MonitorRunner.stopMonitor();
-				break;
+				return true;
 			case CREATE:
 				MonitorRunner.sendCreatedMsg(MonitorRunner.createNode());
-				break;
-			case DEPLOY:
-				MonitorRunner.sendDeployAppMessage(MonitorRunner.deployApp());
-				break;
-			case DEPLOYMASTER:
-				MonitorRunner.sendMasterDeployed(MonitorRunner.deployMasterApp());
-				break;
+				return true;
 			}
-		} catch (Exception e) {
+			
+			return true;
+	}
+
+	public synchronized void deployMaster() throws RemoteException, InterruptedException {
+		// TODO Auto-generated method stub
+		try {
+				MonitorRunner.sendExecuted(MonitorRunner.deployMaster());
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	}
+
+	public synchronized void deployApp() throws RemoteException, InterruptedException {
+		// TODO Auto-generated method stub
+		MonitorRunner.sendExecuted(MonitorRunner.deployApp());
+	}
+
+	public synchronized void execAction(int seq) throws RemoteException, InterruptedException {
+		// TODO Auto-generated method stub
+		MonitorRunner.printLog("[MONITOR] Sequence execution recieved: "+seq);
+		try {
+			MonitorRunner.sendExecuted(MonitorRunner.execAction(seq));
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
