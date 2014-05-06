@@ -9,23 +9,49 @@ package fr.mines_nantes.atlanmod.monitoring.frameworks;
  * JPDA Classes
  */
 
+import org.apache.hadoop.fs.FSDataOutputStream;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.server.namenode.NameNode;
 import org.apache.hadoop.hdfs.server.datanode.DataNode;
 import org.apache.hadoop.conf.Configuration;
 
 
 
+
+
+
+
+
+
+
+
+
+
 import fr.mines_nantes.atlanmod.monitoring.monitor.MonitorRunner;
 
+
+
+
+
+
+
+
+
+
+
+import java.io.BufferedInputStream;
 /*
  * Java Classes
  */
 import java.io.IOException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.logging.Logger;
 import java.util.logging.FileHandler;
 import java.util.Properties;
+import java.util.Random;
 
 public class HDFS {
 
@@ -36,12 +62,17 @@ public class HDFS {
     protected static NameNode NNode;
     protected static NameNode nn;
     protected static DataNode dn;
+    
+    protected static Thread tStress;
+    
+    protected static boolean stopStress = false;
+    protected static boolean pauseStress = false;
 
     /*
      * Reading Hadoop Properties (hadoop.properties)
      *
      */
-    synchronized private static Configuration readPropertiesHadoop() throws IOException, InterruptedException {
+    synchronized public static Configuration readPropertiesHadoop() throws IOException, InterruptedException {
         log.info("Reading Hadoop properties!");
         
         Configuration cfg = new Configuration();
@@ -148,6 +179,61 @@ public class HDFS {
 		} catch (InterruptedException e) {
 		}
     }
+	
+	public static void stress() {
+		tStress = new Thread() {
+        	public void run() {
+        		MonitorRunner.printLog("[STRESS] Starting stress ");
+        		HDFSClient hdfsClient = new HDFSClient();
+        		MonitorRunner.printLog("[STRESS] Stop stress signal = "+stopStress);
+        		while (!stopStress) {
+        			
+        			while (pauseStress) {
+        				// Wait
+        				try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+        			}
+        			
+	        		Random random = new Random();
+	        		int rCode = random.nextInt();
+	        		String source = "file-"+rCode+".txt";
+	        		String destination = "/dest-"+rCode;
+	        		MonitorRunner.printLog("[STRESS] Gerenating input file "+source);
+	        		String command = "bash gen-input-file.sh "+source;
+	        		Runtime run = Runtime.getRuntime();
+	        		MonitorRunner.printLog("[STRESS] Test 1");
+	        		try {
+						Process p = run.exec(command);
+						MonitorRunner.printLog("[STRESS] Test 2");
+				//		p.waitFor(); // Working well
+	        			MonitorRunner.printLog("[STRESS] Test 3");
+	//        			hdfsClient.addFile(source, destination);
+	        			MonitorRunner.printLog("[STRESS] Test 4");
+	        			Thread.sleep(5000);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						MonitorRunner.printLog("[STRESS] Error putting the file "+source+" in the HDFS: "+e.getMessage());
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						MonitorRunner.printLog("[STRESS] Error waiting for process: "+e.getMessage());
+					}
+        		}
+        	}
+        };
+        tStress.start();
+	}
+	
+	public static void setStopStress() {
+		stopStress = true;
+	}
+	
+	public static void setPauseStress(boolean b) {
+		pauseStress = b;
+	}
 	
 	static String test() {
 		return "Testing...";

@@ -47,10 +47,12 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
 				return true;
 			case STOP:
 				//MonitorRunner.pauseWatchdog();
-				MonitorRunner.stopWatch();
+				MonitorRunner.pauseWatchdog();
+				MonitorRunner.pauseStress();
 				return true;
 			case RESTART:
 				MonitorRunner.restartWatchdog();
+				MonitorRunner.restartStress();
 				return true;
 			case KILL:
 				MonitorRunner.stopMonitor();
@@ -96,5 +98,22 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public Boolean startStress() throws RemoteException, InterruptedException {
+		MonitorRunner.printLog("[MONITOR] Recieved the stress signal");
+		try {
+			MonitorRunner.startStress();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return true;
 	}
 }

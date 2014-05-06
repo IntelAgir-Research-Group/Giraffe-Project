@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 import fr.mines_nantes.atlanmod.ReadConfigurations;
+import fr.mines_nantes.atlanmod.monitoring.frameworks.HDFS;
 import fr.mines_nantes.atlanmod.monitoring.rmi.*;
 import fr.mines_nantes.atlanmod.monitoring.rmi.master.Master;
 import fr.mines_nantes.atlanmod.monitoring.rmi.monitor.ClientImpl;
@@ -387,6 +388,26 @@ public class MonitorRunner {
 	
 	public static boolean deployMaster() {
 		exec.execDeployMaster();
+		return true;
+	}
+	
+	public static boolean startStress() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		exec.execStress();
+		return true;
+	}
+	
+	public static boolean pauseStress() {
+		HDFS.setPauseStress(true);
+		return true;
+	}
+	
+	public static boolean restartStress() {
+		HDFS.setPauseStress(false);
+		return true;
+	}
+	
+	public static boolean stopStress() {
+		HDFS.setStopStress();
 		return true;
 	}
 	

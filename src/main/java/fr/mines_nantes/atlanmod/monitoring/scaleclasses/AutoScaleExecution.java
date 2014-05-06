@@ -1,10 +1,10 @@
 package fr.mines_nantes.atlanmod.monitoring.scaleclasses;
 
 import fr.mines_nantes.atlanmod.annotations.Create;
-import fr.mines_nantes.atlanmod.annotations.CreateVM;
 import fr.mines_nantes.atlanmod.annotations.Deploy;
 import fr.mines_nantes.atlanmod.annotations.Exec;
 import fr.mines_nantes.atlanmod.annotations.Monitor;
+import fr.mines_nantes.atlanmod.annotations.Stress;
 import fr.mines_nantes.atlanmod.monitoring.frameworks.HDFS;
 import fr.mines_nantes.atlanmod.monitoring.monitor.MonitorRunner;
 
@@ -40,6 +40,13 @@ public class AutoScaleExecution {
 	// Crate the monitoring specification here or remove
 	public void monitorNodes() {
 		MonitorRunner.printLog("[AUTO SCALE CLASS] Start to monitoring!");
+		HDFS.stress();
+	}
+	
+	@Stress
+	public void stressHDFS() {
+		MonitorRunner.printLog("[AUTO SCALE CLASS] Stressing the HDFS");
+		HDFS.stress();
 	}
 	
 	@Exec(sequence=1, monitor=-2)
@@ -57,8 +64,4 @@ public class AutoScaleExecution {
 		MonitorRunner.printLog("[AUTO SCALE CLASS] Action 3!");
 	}
 
-	@CreateVM
-	public void cVM() {
-		
-	}
 }

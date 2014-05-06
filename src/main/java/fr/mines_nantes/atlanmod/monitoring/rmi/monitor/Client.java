@@ -11,4 +11,5 @@ public interface Client extends Remote{
 	public void deployApp() throws RemoteException, InterruptedException;
 	public void execAction(int seq) throws RemoteException, InterruptedException;
 	public Boolean setWatchSignal() throws RemoteException, InterruptedException;
+	public Boolean startStress() throws RemoteException, InterruptedException;
 }

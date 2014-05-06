@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import fr.mines_nantes.atlanmod.annotations.Create;
 import fr.mines_nantes.atlanmod.annotations.Deploy;
 import fr.mines_nantes.atlanmod.annotations.Exec;
+import fr.mines_nantes.atlanmod.annotations.Stress;
 import fr.mines_nantes.atlanmod.monitoring.monitor.MonitorRunner;
 
 public class Executor {
@@ -114,6 +115,16 @@ public class Executor {
 				if (e.sequence() == seq) {
 					method.invoke(runner);
 				}
+			}
+		}
+		return true;
+	}
+	
+	public boolean execStress() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		for (Method method : methods) {
+			Stress s = method.getAnnotation(Stress.class);
+			if (s != null) {
+				method.invoke(runner);
 			}
 		}
 		return true;

@@ -42,6 +42,7 @@ public class MasterRunner {
 	private static boolean broken = false;
 	private static boolean monitoring = false;
 	private static boolean executed = false;
+	private static boolean noScalable = false;
 	
 	public static boolean addMonitorAddresses(int monitorID, String addr) throws NumberFormatException, IOException {
 		monitorAddresses.add(monitorID, addr);
@@ -210,6 +211,17 @@ public class MasterRunner {
 		}
 	}
 	
+	public static void sendStress() throws NumberFormatException, IOException, InterruptedException {
+		int port = Integer.valueOf(ReadConfigurations.getPropertyValue("monitor_port"));
+		int count;
+		String slave;
+		for (count=0; count<monitorAddresses.size();  count++) {
+			  slave = monitorAddresses.get(count);
+		      clientRMI = monitorConnect("Monitor", slave, port);
+		      clientRMI.startStress();
+		}
+	}
+	
 	public static boolean createNodes() throws NumberFormatException, IOException, InterruptedException {
 		MasterRunner.sendSignal("CREATE");
 		while(!created) {
@@ -257,7 +269,7 @@ public class MasterRunner {
 		}
 		return true;
 	}
-	
+		
 	public static boolean startMonitoring() throws NumberFormatException, IOException, InterruptedException {
 		setMonitoring(false);
 		MasterRunner.sendSignal("START");
@@ -269,6 +281,10 @@ public class MasterRunner {
 		while(!monitoring) {
 			// While until all nodes are created
 		}
+	}
+	
+	public static void startStress() throws NumberFormatException, IOException, InterruptedException {
+		MasterRunner.sendSignal("STRESS");
 	}
 	
 	public static void reactiveInBrokenCase() {
@@ -346,7 +362,11 @@ public class MasterRunner {
 			String autoScaleClassDist = (String) ReadConfigurations.getPropertyValue("server_auto_scale_class");
 			Distributor dist = new Distributor(autoScaleClassDist);
 			
-			/*
+			while (!noScalable) {
+				// Wait
+				Thread.sleep(1000);
+			}
+			
 			// Kill Monitors
 			LOGGER.info("Stopping monitors.");
 			try {
@@ -355,10 +375,11 @@ public class MasterRunner {
 				// Nothing to do
 			}
 			
+			
 			LOGGER.info("Stopping master.");
 			// Kill Master
 			System.exit(0);
-			*/
+			
 
 	}
 	

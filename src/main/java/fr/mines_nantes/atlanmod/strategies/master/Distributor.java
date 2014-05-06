@@ -10,6 +10,7 @@ import fr.mines_nantes.atlanmod.annotations.Create;
 import fr.mines_nantes.atlanmod.annotations.Deploy;
 import fr.mines_nantes.atlanmod.annotations.Exec;
 import fr.mines_nantes.atlanmod.annotations.Monitor;
+import fr.mines_nantes.atlanmod.annotations.Stress;
 import fr.mines_nantes.atlanmod.monitoring.master.MasterRunner;
 import fr.mines_nantes.atlanmod.monitoring.rmi.master.MasterImpl;
 
@@ -19,6 +20,7 @@ public class Distributor {
 	int createMethods = 0;
 	int deploySlaveMethods = 0;
 	int deployMasterMethod = 0;
+	int stressMethod = 0;
 	int monitorMethods = 0;
 	ArrayList<Method> execMethods = new ArrayList<Method>();
 	Object runner;
@@ -57,6 +59,11 @@ public class Distributor {
 			            	Exec e = method.getAnnotation(Exec.class);
 				            if (e != null) {
 				                execMethods.add(method);
+				            } else {
+				            	Stress s = method.getAnnotation(Stress.class);
+					            if (s != null) {
+					                stressMethod = 1;
+					            }
 				            }
 			            }
 		            }
@@ -122,6 +129,22 @@ public class Distributor {
 		if (monitorMethods>0) {
 			try {
 				MasterRunner.startMonitoring();
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		// Starting stress
+		if (stressMethod>0) {
+			try {
+				MasterRunner.sendStress();
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -25,6 +25,7 @@ public class Adviser {
 				// Sending a pause signal to the monitors
 				MasterRunner.sendSignal("STOP");
 				MasterRunner.setMonitoring(true);
+				waitForStabilization();
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -55,6 +56,7 @@ public class Adviser {
 				// Sending a pause signal to the monitors
 				MasterRunner.sendSignal("STOP");
 				MasterRunner.setMonitoring(true);
+				waitForStabilization();
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -71,4 +73,23 @@ public class Adviser {
 		
 	}
 	
+	// Redo
+	public static void restartStressMonitor() {
+		/*
+		 // Send a restart signal to monitors
+		 */
+	}
+	
+	// Stabilization
+	public static void waitForStabilization() {
+		/*
+		if (!noScalable) }
+			while (stabilized) {
+				// wait until the cluster will be stabilized
+			}
+			
+			restartStressMonitor();
+		}
+		*/
+	}
 }
