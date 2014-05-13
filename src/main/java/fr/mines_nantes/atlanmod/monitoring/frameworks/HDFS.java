@@ -82,7 +82,9 @@ public class HDFS {
         FileInputStream fis = new FileInputStream(file);
         properties.load(fis);
         
-        String h = properties.getProperty("hadoop.namenode");
+        String masterIP = MonitorRunner.getMasterIP();
+        log.info("[HDFS Manager] Reading master IP: "+masterIP);
+        String h = masterIP;
         String p = properties.getProperty("hadoop.namenode.port");
         
         cfg.set("fs.default.name", "hdfs://"+h+":"+p);
@@ -135,7 +137,7 @@ public class HDFS {
 			try {
 			 	conf = readPropertiesHadoop();
 				NameNode.format(conf);
-		        System.out.println("Name: "+conf.get("hadoop.namenode"));
+		        System.out.println("Name: "+MonitorRunner.getMasterIP());
 				NNode = new NameNode(conf);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -146,12 +148,14 @@ public class HDFS {
         };
         
         tNN.start();  
-        
+    
+        /*
         try {
 			tNN.join();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 		}
+		*/
         
         MonitorRunner.printLog("[HDFS MANAGER] STARTED");
     }
@@ -173,11 +177,12 @@ public class HDFS {
         };
         
         tDN.start();
-        
+        /*
         try {
 			tDN.join();
 		} catch (InterruptedException e) {
 		}
+		*/
     }
 	
 	public static void stress() {
@@ -209,9 +214,9 @@ public class HDFS {
 	        		try {
 						Process p = run.exec(command);
 						MonitorRunner.printLog("[STRESS] Test 2");
-				//		p.waitFor(); // Working well
+						p.waitFor(); // Working well
 	        			MonitorRunner.printLog("[STRESS] Test 3");
-	//        			hdfsClient.addFile(source, destination);
+	        			hdfsClient.addFile(source, destination);
 	        			MonitorRunner.printLog("[STRESS] Test 4");
 	        			Thread.sleep(5000);
 					} catch (IOException e) {

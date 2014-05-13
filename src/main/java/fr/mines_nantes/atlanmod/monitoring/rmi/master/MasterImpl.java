@@ -28,6 +28,7 @@ public class MasterImpl extends UnicastRemoteObject implements Master {
 	private static int countDeployed = 0;
 	private static int execCount = 0;
 	private static int executedCount = 0;
+	public static String masterIP = null;
 	
 	// ID Monitors
 	private static int monitorsCount = -1;
@@ -115,5 +116,10 @@ public class MasterImpl extends UnicastRemoteObject implements Master {
 			}
 			return true;
 		}
+	}
+
+	public String getMasterIP() throws RemoteException, InterruptedException {
+		// TODO Auto-generated method stub
+		return masterIP;
 	}
 }

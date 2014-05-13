@@ -27,6 +27,7 @@ echo "Setting the hostname to VM $1"
 sshpass -p $password ssh -o "StrictHostKeyChecking no" root@$ip 'echo '$vmname' > /etc/hostname'
 sshpass -p $password ssh -o "StrictHostKeyChecking no" root@$ip 'echo '$ip' $'\t' '$1' > /etc/hosts'
 sshpass -p $password ssh -o "StrictHostKeyChecking no" root@$ip 'hostname '$vmname''
+sshpass -p $password ssh -o "StrictHostKeyChecking no" root#$ip 'cd ~/Giraffe-Project && java -cp .:./target/lib/:./target/Cloud-Resources-Monitor-0.0.1-SNAPSHOT.jar:./target/lib/hadoop-core-0.20.2.jar fr.mines_nantes.atlanmod.monitoring.monitor.MonitorRunner &' 
 echo "Starting the Monitor"
 #ssh root@$ip 'command'
 fi

@@ -328,6 +328,13 @@ public class MonitorRunner {
 		}
 	}
 	
+	public static String getMasterIP() throws RemoteException, InterruptedException {
+		srvConnect("Server");
+		String masterIP = SrvRMI.getMasterIP();
+		LOGGER.info("[Monitor] Getting master IP: "+masterIP);
+		return masterIP;
+	}
+	
 	///
 	// Executing the actions
 	///
@@ -358,6 +365,12 @@ public class MonitorRunner {
 		LOGGER.info("[MONITOR] Deploying master app!");
 		if (exec.execDeployMaster()){
 			LOGGER.info("[MONITOR] App master deployed!");
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			return true;
 		} else {
 			return false;
@@ -369,6 +382,12 @@ public class MonitorRunner {
 		LOGGER.info("[MONITOR] Deploying app!");
 		if (exec.execDeploy()){
 			LOGGER.info("[MONITOR] App deployed!");
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			return true;
 		} else {
 			return false;

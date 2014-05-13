@@ -15,6 +15,8 @@ import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
+import fr.mines_nantes.atlanmod.monitoring.monitor.MonitorRunner;
+
 /*
  * That class was got from: http://blog.rajeevsharma.in/2009/06/using-hdfs-in-java-0200.html
  */
@@ -76,6 +78,8 @@ public class HDFSClient {
         in.close();
         out.close();
         fileSystem.close();
+       
+        MonitorRunner.printLog("[HDFS] File added!");
     }
 
     public void readFile(String file) throws IOException {
@@ -107,6 +111,8 @@ public class HDFSClient {
         in.close();
         out.close();
         fileSystem.close();
+        
+        
     }
 
     public void deleteFile(String file) throws IOException {

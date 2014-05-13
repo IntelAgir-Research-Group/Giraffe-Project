@@ -12,4 +12,5 @@ public interface Master extends Remote {
   //  public Boolean receiveDeployAppMasterMessage(boolean md) throws RemoteException, InterruptedException;
   //  public Boolean receiveDeployAppMessage(boolean ad) throws RemoteException, InterruptedException;
     public Boolean receiveExecuted(boolean exec) throws RemoteException, InterruptedException;
+    public String getMasterIP() throws RemoteException, InterruptedException;
 }

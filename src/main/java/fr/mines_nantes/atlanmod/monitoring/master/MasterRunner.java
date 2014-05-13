@@ -18,6 +18,7 @@ import org.virtualbox_4_1.VirtualBoxManager;
 
 import fr.mines_nantes.atlanmod.ReadConfigurations;
 import fr.mines_nantes.atlanmod.monitoring.frameworks.HDFS;
+import fr.mines_nantes.atlanmod.monitoring.monitor.MonitorRunner;
 import fr.mines_nantes.atlanmod.monitoring.rmi.RmiRegistryRunner;
 import fr.mines_nantes.atlanmod.monitoring.rmi.master.MasterImpl;
 import fr.mines_nantes.atlanmod.monitoring.rmi.monitor.Client;
@@ -43,6 +44,7 @@ public class MasterRunner {
 	private static boolean monitoring = false;
 	private static boolean executed = false;
 	private static boolean noScalable = false;
+	private static boolean firstMonitor = true;
 	
 	public static boolean addMonitorAddresses(int monitorID, String addr) throws NumberFormatException, IOException {
 		monitorAddresses.add(monitorID, addr);
@@ -50,6 +52,11 @@ public class MasterRunner {
 		//LOGGER.severe("[SERVER] Error adding monitor to the list");
 			
 		// Sending id to Monitor
+		
+		if (firstMonitor==true) {
+			LOGGER.info("[SERVER] Setting master IP "+addr);
+			MasterImpl.masterIP = addr;
+		}
 		
 		String host = addr;
 		int port = Integer.valueOf(ReadConfigurations.getPropertyValue("monitor_port"));
@@ -64,6 +71,8 @@ public class MasterRunner {
 		}
 		
 		LOGGER.info("[SERVER] Monitor ID sent");
+		
+		firstMonitor = false;
 		
 		if (Integer.valueOf(ReadConfigurations.getPropertyValue("server_max_monitors")).equals(monitorAddresses.size())) {
 			allMonitors=true;

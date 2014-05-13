@@ -30,10 +30,11 @@ public class AutoScaleExecution {
 		MonitorRunner.printLog("[AUTO SCALE CLASS] NameNode created!");
 	}
 	
-	@Deploy(type = "slave", monitor=-2)
+	@Deploy(type = "slave", monitor=-1)
 	public void deploySlave() {
 		MonitorRunner.printLog("[AUTO SCALE CLASSE] Create DataNode!");
 		HDFS.startDataNode();
+		MonitorRunner.printLog("[AUTO SCALE CLASSE] DataNode created!");
 	}
 	
 	@Monitor 
