@@ -67,15 +67,18 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
 
 	public synchronized void deployMaster() throws RemoteException, InterruptedException {
 		// TODO Auto-generated method stub
-		try {
-				MonitorRunner.sendExecuted(MonitorRunner.deployMaster());
-			} catch (RemoteException e) {
+		//try {
+		//		MonitorRunner.sendExecuted(MonitorRunner.deployMaster());
+			MonitorRunner.deployMaster();
+	/*	
+	} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+	*/
 	}
 
 	public synchronized void deployApp() throws RemoteException, InterruptedException {

@@ -1,20 +1,73 @@
 package fr.mines_nantes.atlanmod.monitoring.scaleclasses;
 
+import java.io.IOException;
+import java.util.Random;
+
+import org.junit.internal.builders.AllDefaultPossibilitiesBuilder;
+
+import fr.mines_nantes.atlanmod.ReadConfigurations;
 import fr.mines_nantes.atlanmod.annotations.Create;
 import fr.mines_nantes.atlanmod.annotations.Deploy;
 import fr.mines_nantes.atlanmod.annotations.Exec;
 import fr.mines_nantes.atlanmod.annotations.Monitor;
 import fr.mines_nantes.atlanmod.annotations.Stress;
 import fr.mines_nantes.atlanmod.monitoring.frameworks.HDFS;
+import fr.mines_nantes.atlanmod.monitoring.master.MasterRunner;
 import fr.mines_nantes.atlanmod.monitoring.monitor.MonitorRunner;
 
 public class AutoScaleExecution {
 	
 	HDFS hdfs = new HDFS();
+	static int i=1;
 
 	@Create
-	public void createNodes() {
-		MonitorRunner.printLog("[AUTO SCALE CLASS] Creating a new node!");
+	public boolean createNodes() {
+		MonitorRunner.printLog("[AUTO SCALE CLASS] Creating new nodes!");
+			try {
+				int count = 0;
+				int maxCount = Integer.valueOf(ReadConfigurations.getPropertyValue("server_max_monitors"));
+				while (!MasterRunner.allMonitors && count < maxCount) {
+					MonitorRunner.printLog("[AUTO SCALE CLASS] All Monitors Status: "+MasterRunner.allMonitors);
+					Thread tCreate = new Thread() {
+						public void run() {
+							try {
+								String createScript = (String) ReadConfigurations.getPropertyValue("virtualbox_vm_create_script");
+								Random rID = new Random();
+								int monitorID = rID.nextInt();
+								MonitorRunner.printLog("[AUTO SCALE CLASS] Node "+monitorID);
+								String command = "bash ./"+createScript+" Monitor"+monitorID;
+								MonitorRunner.printLog("[AUTO SCALE CLASS] Executing: "+command);
+								Runtime run = Runtime.getRuntime();
+								Process p = run.exec(command);
+								p.waitFor();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					};
+					tCreate.start();
+					tCreate.join();
+					count++;
+					//MonitorRunner.printLog("[AUTO SCALE CLASS] Waiting for monitor connection");
+					//Thread.sleep(15000);
+					MonitorRunner.printLog("[AUTO SCALE CLASS] Node "+i+" - OK");
+				}
+			} catch (NumberFormatException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} 
+		MonitorRunner.printLog("[AUTO SCALE CLASS] Nodes created!");
+		return true;
 	}
 	
 	@Deploy(type = "master", monitor=0)

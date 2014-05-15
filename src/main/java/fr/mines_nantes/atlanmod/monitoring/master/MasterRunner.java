@@ -36,7 +36,7 @@ public class MasterRunner {
 	static private SimpleFormatter formatterTxt;
 	public static ArrayList<String> monitorAddresses = new ArrayList<String>();
 	private static MasterRunner mR;
-	private static boolean allMonitors = false;
+	public static boolean allMonitors = false;
 	private static boolean created = false;
 	private static boolean masterDeployed = false;
 	private static boolean appDeployed = false;
@@ -77,11 +77,12 @@ public class MasterRunner {
 		if (Integer.valueOf(ReadConfigurations.getPropertyValue("server_max_monitors")).equals(monitorAddresses.size())) {
 			allMonitors=true;
 			//MasterRunner.sendSignal("START");
-			return true;
-		} else {
+		//	return true;
+		} /* else {
 			return false;
 		}
-		
+		*/
+		return true;
 	}
 	
 	public void setLogger() {
@@ -191,11 +192,14 @@ public class MasterRunner {
 		int port = Integer.valueOf(ReadConfigurations.getPropertyValue("monitor_port"));
 		int count;
 		String slave;
+		LOGGER.info("[SERVER] Sending master deploy signal to monitors");
 		for (count=0; count<monitorAddresses.size();  count++) {
 			  slave = monitorAddresses.get(count);
 		      clientRMI = monitorConnect("Monitor", slave, port);
+		      LOGGER.info("[SERVER] RMI Client: "+clientRMI.toString());
 		      clientRMI.deployMaster();
 		}
+		LOGGER.info("[SERVER] Master deploy signal sent");
 	}
 	
 	public static void sendAppDeploy() throws NumberFormatException, IOException, InterruptedException {
@@ -349,7 +353,7 @@ public class MasterRunner {
 			
 			
 			// Wait for monitors, then, execute the Auto scaling
-			
+			/*
 			while(!allMonitors) {
 				// wait
 				try {
@@ -359,6 +363,7 @@ public class MasterRunner {
 					e.printStackTrace();
 				}
 			}
+			*/
 			
 			//LOGGER.info("TESTING: "+(String) ReadConfigurations.getPropertyValue("server_auto_scale_class"));
 			
@@ -371,6 +376,7 @@ public class MasterRunner {
 			String autoScaleClassDist = (String) ReadConfigurations.getPropertyValue("server_auto_scale_class");
 			Distributor dist = new Distributor(autoScaleClassDist);
 			
+			// This will not allow the master pass while Distributor is executing and it will wait for a noScalable signal too. 
 			while (!noScalable) {
 				// Wait
 				Thread.sleep(1000);

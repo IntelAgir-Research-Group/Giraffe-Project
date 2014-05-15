@@ -2,6 +2,7 @@ package fr.mines_nantes.atlanmod.strategies.master;
 
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.lang.annotation.Annotation;
@@ -17,7 +18,7 @@ import fr.mines_nantes.atlanmod.monitoring.rmi.master.MasterImpl;
 public class Distributor {
 	
 	String cName;
-	int createMethods = 0;
+	Method createMethod = null;
 	int deploySlaveMethods = 0;
 	int deployMasterMethod = 0;
 	int stressMethod = 0;
@@ -42,7 +43,8 @@ public class Distributor {
 	        for (Method method : methods) {
 	            Create c = method.getAnnotation(Create.class);
 	            if (c != null) {
-	                createMethods=1;
+	              //  createMethods=1;
+	            	createMethod = method;
 	            } else {
 	            	Deploy d = method.getAnnotation(Deploy.class);
 		            if (d != null) {
@@ -85,8 +87,28 @@ public class Distributor {
 		
 		// Execution sequence (Create -> Deploy -> Monitor -> Exec)
 		// For now, only one create method is possible
-		if (createMethods>0) {
+		if (createMethod != null) {
 			try {
+				createMethod.invoke(runner);
+				// Will wait for all monitors connect
+				System.out.println("Waiting for all monitors");
+				while(!MasterRunner.allMonitors) {
+					Thread.sleep(1000);
+				}
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			/*try {
 				//MasterRunner.sendSignal("CREATE");
 				MasterRunner.createNodes();
 			} catch (NumberFormatException e) {
@@ -99,6 +121,8 @@ public class Distributor {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			*/
+			System.out.println("Passei por aqui!");
 		}
 			
 		// Deploying Master

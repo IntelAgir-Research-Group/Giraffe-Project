@@ -55,7 +55,6 @@ public class Executor {
 	
 	public boolean execDeploy() {
 		MonitorRunner.printLog("[EXECUTOR] Deploying the app - monitor "+MonitorRunner.getID());
-
 		// Creating a execution sequence
 		for (Method method : methods) {
 			Deploy c = method.getAnnotation(Deploy.class);
@@ -79,7 +78,7 @@ public class Executor {
 	}
 	
 	public boolean execDeployMaster() {
-		
+		MonitorRunner.printLog("[EXECUTOR] Deploying the master");
 		// Creating a execution sequence
 		for (Method method : methods) {
 			Deploy c = method.getAnnotation(Deploy.class);
