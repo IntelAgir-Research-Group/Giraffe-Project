@@ -46,7 +46,7 @@ public class MasterImpl extends UnicastRemoteObject implements Master {
         super();
     }
      
-    public synchronized Boolean receiveMonitorNames(String a) throws NumberFormatException, IOException {
+    public synchronized Boolean receiveMonitorName(String a) throws NumberFormatException, IOException {
     	monitorsCount++;
     	return MasterRunner.addMonitorAddresses(monitorsCount, a);
     }
@@ -60,7 +60,7 @@ public class MasterImpl extends UnicastRemoteObject implements Master {
 		Adviser.memAlerts();
 		return true;
 	}
-	
+	/*
 	public synchronized Boolean receiveCreatedMessage(boolean tf) throws RemoteException, InterruptedException {
 		if (tf == false) {
 			return false;
@@ -73,7 +73,6 @@ public class MasterImpl extends UnicastRemoteObject implements Master {
 		}
 	}
 	
-	/*
 	public synchronized Boolean receiveDeployAppMasterMessage(boolean md) throws RemoteException, InterruptedException {
 		if (md == false){
 			return false;
@@ -118,7 +117,7 @@ public class MasterImpl extends UnicastRemoteObject implements Master {
 		}
 	}
 
-	public String getMasterIP() throws RemoteException, InterruptedException {
+	public String readMasterAppIP() throws RemoteException, InterruptedException {
 		// TODO Auto-generated method stub
 		return masterIP;
 	}

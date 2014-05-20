@@ -37,9 +37,9 @@ public class MasterRunner {
 	public static ArrayList<String> monitorAddresses = new ArrayList<String>();
 	private static MasterRunner mR;
 	public static boolean allMonitors = false;
-	private static boolean created = false;
-	private static boolean masterDeployed = false;
-	private static boolean appDeployed = false;
+//	private static boolean created = false;
+//	private static boolean masterDeployed = false;
+//	private static boolean appDeployed = false;
 	private static boolean broken = false;
 	private static boolean monitoring = false;
 	private static boolean executed = false;
@@ -49,13 +49,13 @@ public class MasterRunner {
 	public static boolean addMonitorAddresses(int monitorID, String addr) throws NumberFormatException, IOException {
 		monitorAddresses.add(monitorID, addr);
 		LOGGER.info("[SERVER] Monitor added to list");
-		//LOGGER.severe("[SERVER] Error adding monitor to the list");
 			
 		// Sending id to Monitor
 		
 		if (firstMonitor==true) {
 			LOGGER.info("[SERVER] Setting master IP "+addr);
 			MasterImpl.masterIP = addr;
+			firstMonitor = false;
 		}
 		
 		String host = addr;
@@ -72,16 +72,13 @@ public class MasterRunner {
 		
 		LOGGER.info("[SERVER] Monitor ID sent");
 		
-		firstMonitor = false;
-		
-		if (Integer.valueOf(ReadConfigurations.getPropertyValue("server_max_monitors")).equals(monitorAddresses.size())) {
+		if (Integer.valueOf(ReadConfigurations.getPropertyValue("server_max_monitors")) == monitorAddresses.size()) {
 			allMonitors=true;
-			//MasterRunner.sendSignal("START");
-		//	return true;
-		} /* else {
-			return false;
+		}  else {
+			LOGGER.info("[SERVER] Waiting for more monitors. MAX: "+ReadConfigurations.getPropertyValue("server_max_monitors")+
+					" | Monitors: "+monitorAddresses.size());
 		}
-		*/
+		
 		return true;
 	}
 	
@@ -163,18 +160,6 @@ public class MasterRunner {
 		    clientRMI.receiveSrvMessage(signal);
 			System.out.println("[SERVER] Signal sent to "+slave);
 		}
-		/*
-		if (signal.equals("START")) {
-			for (count=0; count<monitorAddresses.size();  count++) {
-				  slave = monitorAddresses.get(count);
-				  clientRMI = monitorConnect("Monitor", slave, port);
-				  LOGGER.info("[SERVER] Starting to watch - "+slave);
-				  clientRMI.setWatchSignal();
-				  LOGGER.info("[SERVER] Watching - "+slave);
-				  
-			}
-		}
-		*/
 	}
 
 	public static void sendBroadcastMessage(String msg) throws IOException, InterruptedException {
@@ -197,7 +182,7 @@ public class MasterRunner {
 			  slave = monitorAddresses.get(count);
 		      clientRMI = monitorConnect("Monitor", slave, port);
 		      LOGGER.info("[SERVER] RMI Client: "+clientRMI.toString());
-		      clientRMI.deployMaster();
+		      clientRMI.receiveDeployMaster();
 		}
 		LOGGER.info("[SERVER] Master deploy signal sent");
 	}
@@ -209,7 +194,7 @@ public class MasterRunner {
 		for (count=0; count<monitorAddresses.size();  count++) {
 			  slave = monitorAddresses.get(count);
 		      clientRMI = monitorConnect("Monitor", slave, port);
-		      clientRMI.deployApp();
+		      clientRMI.receiveDeployApp();
 		}
 	}
 	
@@ -220,7 +205,7 @@ public class MasterRunner {
 		for (count=0; count<monitorAddresses.size();  count++) {
 			  slave = monitorAddresses.get(count);
 		      clientRMI = monitorConnect("Monitor", slave, port);
-		      clientRMI.execAction(seq);
+		      clientRMI.receiveExecAction(seq);
 		}
 	}
 	
@@ -231,8 +216,13 @@ public class MasterRunner {
 		for (count=0; count<monitorAddresses.size();  count++) {
 			  slave = monitorAddresses.get(count);
 		      clientRMI = monitorConnect("Monitor", slave, port);
-		      clientRMI.startStress();
+		      clientRMI.receiveStartStress();
 		}
+	}
+	
+	/*
+	public static void sendStressSignal() throws NumberFormatException, IOException, InterruptedException {
+		MasterRunner.sendSignal("STRESS");
 	}
 	
 	public static boolean createNodes() throws NumberFormatException, IOException, InterruptedException {
@@ -243,8 +233,9 @@ public class MasterRunner {
 		reactiveInBrokenCase();
 		return true;
 	}
+	*/
 	
-	public static boolean deployMaster() {
+	public static boolean sendDeployMaster() {
 		try {
 			MasterRunner.sendMasterDeploy();
 		} catch (IOException e) {
@@ -258,22 +249,22 @@ public class MasterRunner {
 			// While until all nodes are created
 		}
 		executed = false;
-		reactiveInBrokenCase();
+		reactIfBroken();
 		return true;
 	}
 	
-	public static boolean deployApp() throws NumberFormatException, IOException, InterruptedException {
+	public static boolean sendDeployApp() throws NumberFormatException, IOException, InterruptedException {
 	//	MasterRunner.sendSignal("DEPLOY");
 		LOGGER.info("[SERVER] Executing app deploy");
 		MasterRunner.sendAppDeploy();
 		while(!executed) {
 			// While until all nodes are created
 		}
-		reactiveInBrokenCase();
+		reactIfBroken();
 		return true;
 	}
 	
-	public static boolean execAction(int seq) throws NumberFormatException, IOException, InterruptedException {
+	public static boolean sendExecAction(int seq) throws NumberFormatException, IOException, InterruptedException {
 		LOGGER.info("[SERVER] Executing action");
 		MasterRunner.sendAction(seq);
 		MasterImpl.setExecCount(0);
@@ -283,42 +274,44 @@ public class MasterRunner {
 		return true;
 	}
 		
-	public static boolean startMonitoring() throws NumberFormatException, IOException, InterruptedException {
-		setMonitoring(false);
+	public static boolean sendStartMonitoring() throws NumberFormatException, IOException, InterruptedException {
+		setMonitoringSignal(false);
 		MasterRunner.sendSignal("START");
 		// waitMonitoring();
 		return true;
 	}
 	
-	public static void waitMonitoring() {
+	public static void waitForAllMonitors() {
 		while(!monitoring) {
 			// While until all nodes are created
 		}
 	}
 	
-	public static void startStress() throws NumberFormatException, IOException, InterruptedException {
-		MasterRunner.sendSignal("STRESS");
-	}
-	
-	public static void reactiveInBrokenCase() {
+	public static void reactIfBroken() {
 		if (broken) {
 			System.out.println("Do something, because the system is broken... ");
 		}
 	}
 	
+	/*
 	public static void setCreated() {
 		created=true;
 	}
+	*/
 	
+	/*
 	public static void setAppMasterDeployed() {
 		masterDeployed=true;
 	}
+	*
 	
+	/*
 	public static void setAppDeployed() {
 		appDeployed=true;
 	}
+	*/
 	
-	public static void setMonitoring(boolean b) {
+	public static void setMonitoringSignal(boolean b) {
 		LOGGER.info("[SERVER] Setting monitoring signal to "+b);
 		monitoring=b;
 	}
@@ -377,10 +370,15 @@ public class MasterRunner {
 			Distributor dist = new Distributor(autoScaleClassDist);
 			
 			// This will not allow the master pass while Distributor is executing and it will wait for a noScalable signal too. 
+			///// 
+			// That will be implemented soon...
+			/////
+			/*
 			while (!noScalable) {
 				// Wait
 				Thread.sleep(1000);
 			}
+			*/
 			
 			// Kill Monitors
 			LOGGER.info("Stopping monitors.");
@@ -390,12 +388,8 @@ public class MasterRunner {
 				// Nothing to do
 			}
 			
-			
 			LOGGER.info("Stopping master.");
 			// Kill Master
 			System.exit(0);
-			
-
 	}
-	
 }

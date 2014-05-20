@@ -7,11 +7,9 @@ Giraffe=scale up + top view
 
 How to execute:
 ---------------
-- Config the hostname x IP in remote nodes
-- Create a new ssh key without password (will be more easy to execute)
-- Update the config/slaves list
-- Copy the ssh ky to slaves (./run-ssh-copy-id.sh)
-- Compile the Maven Project to generate the .jar
+- Configure the parameters in monitoring.properties
+- Create a VirtualMachine to be cloned (requirements: OpenSSH and Java)
+- Set the virtual machine user and password in create-vm.sh
+- Compile the Giraffe-Project to generate the .jar (mvn install)
 - Run the master (./run-master.sh)
-- Run the slaves (./run-slaves.sh) - In the first time you will need to sync the project folder with all nodes. I will solve that later!
 - See the execution tracking in the log files (server-log.txt and monitor-log.txt)

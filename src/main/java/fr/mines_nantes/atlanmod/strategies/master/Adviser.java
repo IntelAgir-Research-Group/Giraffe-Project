@@ -24,7 +24,7 @@ public class Adviser {
 			try {
 				// Sending a pause signal to the monitors
 				MasterRunner.sendSignal("STOP");
-				MasterRunner.setMonitoring(true);
+				MasterRunner.setMonitoringSignal(true);
 				waitForStabilization();
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
@@ -55,7 +55,7 @@ public class Adviser {
 			try {
 				// Sending a pause signal to the monitors
 				MasterRunner.sendSignal("STOP");
-				MasterRunner.setMonitoring(true);
+				MasterRunner.setMonitoringSignal(true);
 				waitForStabilization();
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block

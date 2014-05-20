@@ -22,7 +22,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
 	private static final long serialVersionUID = 1L;
 	
 	public enum Signal {
-	    START, STOP, RESTART, KILL, CREATE
+	    START, STOP, RESTART, KILL
 	}
 	
 	public synchronized void receiveID(int id) throws RemoteException, InterruptedException {
@@ -31,7 +31,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
 		MonitorRunner.printLog("[MONITOR] ID setted");
 	}
 	
-	public Boolean setWatchSignal() throws RemoteException, InterruptedException {
+	public Boolean receiveSetWatchSignal() throws RemoteException, InterruptedException {
 		MonitorRunner.startWatchdog();
 		return true;
 	}
@@ -57,36 +57,20 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
 			case KILL:
 				MonitorRunner.stopMonitor();
 				return true;
-			case CREATE:
-				MonitorRunner.sendCreatedMsg(MonitorRunner.createNode());
-				return true;
 			}
 			
 			return true;
 	}
 
-	public synchronized void deployMaster() throws RemoteException, InterruptedException {
-		// TODO Auto-generated method stub
-		//try {
-		//		MonitorRunner.sendExecuted(MonitorRunner.deployMaster());
-			MonitorRunner.deployMaster();
-	/*	
-	} catch (RemoteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	*/
+	public synchronized void receiveDeployMaster() throws RemoteException, InterruptedException {
+		MonitorRunner.sendExecuted(MonitorRunner.deployMaster());
 	}
 
-	public synchronized void deployApp() throws RemoteException, InterruptedException {
-		// TODO Auto-generated method stub
+	public synchronized void receiveDeployApp() throws RemoteException, InterruptedException {
 		MonitorRunner.sendExecuted(MonitorRunner.deployApp());
 	}
 
-	public synchronized void execAction(int seq) throws RemoteException, InterruptedException {
+	public synchronized void receiveExecAction(int seq) throws RemoteException, InterruptedException {
 		// TODO Auto-generated method stub
 		MonitorRunner.printLog("[MONITOR] Sequence execution recieved: "+seq);
 		try {
@@ -103,8 +87,8 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
 		}
 	}
 
-	public Boolean startStress() throws RemoteException, InterruptedException {
-		MonitorRunner.printLog("[MONITOR] Recieved the stress signal");
+	public Boolean receiveStartStress() throws RemoteException, InterruptedException {
+		MonitorRunner.printLog("[MONITOR] Received the stress signal");
 		try {
 			MonitorRunner.startStress();
 		} catch (IllegalAccessException e) {

@@ -7,9 +7,9 @@ import java.rmi.RemoteException;
 public interface Client extends Remote{
 	public Boolean receiveSrvMessage(String msg) throws RemoteException, InterruptedException;
 	public void receiveID(int id) throws RemoteException, InterruptedException;
-	public void deployMaster() throws RemoteException, InterruptedException;
-	public void deployApp() throws RemoteException, InterruptedException;
-	public void execAction(int seq) throws RemoteException, InterruptedException;
-	public Boolean setWatchSignal() throws RemoteException, InterruptedException;
-	public Boolean startStress() throws RemoteException, InterruptedException;
+	public void receiveDeployMaster() throws RemoteException, InterruptedException;
+	public void receiveDeployApp() throws RemoteException, InterruptedException;
+	public void receiveExecAction(int seq) throws RemoteException, InterruptedException;
+	public Boolean receiveSetWatchSignal() throws RemoteException, InterruptedException;
+	public Boolean receiveStartStress() throws RemoteException, InterruptedException;
 }

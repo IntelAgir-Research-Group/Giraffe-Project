@@ -1,0 +1,120 @@
+May 20, 2014 10:56:51 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner registryRMI
+INFO: [SERVER] Creating the Registry
+May 20, 2014 10:56:52 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner registryRMI
+INFO: [SERVER] Registry created
+May 20, 2014 10:56:52 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner startMaster
+INFO: [SERVER] Starting the Master
+May 20, 2014 10:56:52 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner startMaster
+INFO: [SERVER] Waiting for connections...
+May 20, 2014 10:59:57 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner addMonitorAddresses
+INFO: [SERVER] Monitor added to list
+May 20, 2014 10:59:57 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner addMonitorAddresses
+INFO: [SERVER] Setting master IP 172.28.3.235
+May 20, 2014 10:59:57 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Looking up rmi://172.28.3.235:1098/Monitor...
+May 20, 2014 10:59:57 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Connected to: rmi://172.28.3.235:1098/Monitor
+May 20, 2014 10:59:57 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner addMonitorAddresses
+INFO: [SERVER] Monitor ID sent
+May 20, 2014 10:59:57 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner addMonitorAddresses
+INFO: [SERVER] Waiting for more monitors. MAX: 2 | Monitors: 1
+May 20, 2014 11:02:40 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner addMonitorAddresses
+INFO: [SERVER] Monitor added to list
+May 20, 2014 11:02:40 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Looking up rmi://172.28.2.236:1098/Monitor...
+May 20, 2014 11:02:40 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Connected to: rmi://172.28.2.236:1098/Monitor
+May 20, 2014 11:02:40 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner addMonitorAddresses
+INFO: [SERVER] Monitor ID sent
+May 20, 2014 11:02:40 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner sendMasterDeploy
+INFO: [SERVER] Sending master deploy signal to monitors
+May 20, 2014 11:02:40 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Looking up rmi://172.28.3.235:1098/Monitor...
+May 20, 2014 11:02:40 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Connected to: rmi://172.28.3.235:1098/Monitor
+May 20, 2014 11:02:40 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner sendMasterDeploy
+INFO: [SERVER] RMI Client: Proxy[Client,RemoteObjectInvocationHandler[UnicastRef [liveRef: [endpoint:[172.28.3.235:49933](remote),objID:[70efba48:14618dbbe1b:-7fff, 4075832190139545711]]]]]
+May 20, 2014 11:02:41 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner setExecuted
+INFO: [SERVER] Setting executed to true
+May 20, 2014 11:02:41 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Looking up rmi://172.28.2.236:1098/Monitor...
+May 20, 2014 11:02:41 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Connected to: rmi://172.28.2.236:1098/Monitor
+May 20, 2014 11:02:41 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner sendMasterDeploy
+INFO: [SERVER] RMI Client: Proxy[Client,RemoteObjectInvocationHandler[UnicastRef [liveRef: [endpoint:[172.28.2.236:33381](remote),objID:[-3d35afef:14618de40db:-7fff, 5266535951265655705]]]]]
+May 20, 2014 11:02:42 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner sendMasterDeploy
+INFO: [SERVER] Master deploy signal sent
+May 20, 2014 11:02:42 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner deployApp
+INFO: [SERVER] Executing app deploy
+May 20, 2014 11:02:42 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Looking up rmi://172.28.3.235:1098/Monitor...
+May 20, 2014 11:02:42 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Connected to: rmi://172.28.3.235:1098/Monitor
+May 20, 2014 11:02:47 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Looking up rmi://172.28.2.236:1098/Monitor...
+May 20, 2014 11:02:47 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Connected to: rmi://172.28.2.236:1098/Monitor
+May 20, 2014 11:02:52 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner setExecuted
+INFO: [SERVER] Setting executed to true
+May 20, 2014 11:02:52 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner setMonitoring
+INFO: [SERVER] Setting monitoring signal to false
+May 20, 2014 11:02:52 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Looking up rmi://172.28.3.235:1098/Monitor...
+May 20, 2014 11:02:52 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Connected to: rmi://172.28.3.235:1098/Monitor
+May 20, 2014 11:02:53 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Looking up rmi://172.28.2.236:1098/Monitor...
+May 20, 2014 11:02:53 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Connected to: rmi://172.28.2.236:1098/Monitor
+May 20, 2014 11:02:54 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Looking up rmi://172.28.3.235:1098/Monitor...
+May 20, 2014 11:02:54 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Connected to: rmi://172.28.3.235:1098/Monitor
+May 20, 2014 11:02:54 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Looking up rmi://172.28.2.236:1098/Monitor...
+May 20, 2014 11:02:54 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Connected to: rmi://172.28.2.236:1098/Monitor
+May 20, 2014 11:02:54 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner execAction
+INFO: [SERVER] Executing action
+May 20, 2014 11:02:54 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Looking up rmi://172.28.3.235:1098/Monitor...
+May 20, 2014 11:02:55 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Connected to: rmi://172.28.3.235:1098/Monitor
+May 20, 2014 11:02:55 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Looking up rmi://172.28.2.236:1098/Monitor...
+May 20, 2014 11:02:55 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Connected to: rmi://172.28.2.236:1098/Monitor
+May 20, 2014 11:02:56 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner execAction
+INFO: [SERVER] Executing action
+May 20, 2014 11:02:56 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Looking up rmi://172.28.3.235:1098/Monitor...
+May 20, 2014 11:02:56 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Connected to: rmi://172.28.3.235:1098/Monitor
+May 20, 2014 11:02:57 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Looking up rmi://172.28.2.236:1098/Monitor...
+May 20, 2014 11:02:57 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Connected to: rmi://172.28.2.236:1098/Monitor
+May 20, 2014 11:02:58 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner setExecuted
+INFO: [SERVER] Setting executed to true
+May 20, 2014 11:02:58 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner execAction
+INFO: [SERVER] Executing action
+May 20, 2014 11:02:58 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Looking up rmi://172.28.3.235:1098/Monitor...
+May 20, 2014 11:02:58 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Connected to: rmi://172.28.3.235:1098/Monitor
+May 20, 2014 11:02:58 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Looking up rmi://172.28.2.236:1098/Monitor...
+May 20, 2014 11:02:58 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Connected to: rmi://172.28.2.236:1098/Monitor
+May 20, 2014 11:02:59 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner setExecuted
+INFO: [SERVER] Setting executed to true
+May 20, 2014 11:03:12 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Looking up rmi://172.28.3.235:1098/Monitor...
+May 20, 2014 11:03:12 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Connected to: rmi://172.28.3.235:1098/Monitor
+May 20, 2014 11:03:13 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Looking up rmi://172.28.2.236:1098/Monitor...
+May 20, 2014 11:03:13 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner monitorConnect
+INFO: [SERVER] Connected to: rmi://172.28.2.236:1098/Monitor
+May 20, 2014 11:03:13 AM fr.mines_nantes.atlanmod.monitoring.master.MasterRunner setMonitoring
+INFO: [SERVER] Setting monitoring signal to true

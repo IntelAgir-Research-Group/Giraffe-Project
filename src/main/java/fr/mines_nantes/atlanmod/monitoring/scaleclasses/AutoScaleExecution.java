@@ -94,13 +94,13 @@ public class AutoScaleExecution {
 	// Crate the monitoring specification here or remove
 	public void monitorNodes() {
 		MonitorRunner.printLog("[AUTO SCALE CLASS] Start to monitoring!");
-		HDFS.stress();
+		HDFS.startStress();
 	}
 	
 	@Stress
 	public void stressHDFS() {
 		MonitorRunner.printLog("[AUTO SCALE CLASS] Stressing the HDFS");
-		HDFS.stress();
+		HDFS.startStress();
 	}
 	
 	@Exec(sequence=1, monitor=-2)

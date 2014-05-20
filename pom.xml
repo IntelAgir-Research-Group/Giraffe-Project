@@ -12,7 +12,7 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <version>2.1</version>
         <executions>
-         
+         <!-- 
             <execution>
             <phase>package</phase>
             <goals>
@@ -25,7 +25,7 @@
               <overWriteIfNewer>true</overWriteIfNewer>
             </configuration>
           </execution>
-      
+      -->
         </executions>
       </plugin>
     </plugins>

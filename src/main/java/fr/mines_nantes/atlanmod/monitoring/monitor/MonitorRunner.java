@@ -30,12 +30,12 @@ public class MonitorRunner {
 	static private String hostSrv = "";
 	static private int portSrv = 0;
 	static private String srvName = "";
-	static private Master SrvRMI = null;
-	static private Watchdog wd;
-	private static InetAddress ip;
-	private static boolean start = false;
-	private static String monitorName="";
-	private static Executor exec;
+	static private Master srvRMI = null;
+	static private Watchdog wDog;
+	private static InetAddress ipAddress;
+	private static boolean startSignal = false;
+//	private static String monitorName="";
+	private static Executor execObj;
 	
 	///
 	// ID
@@ -80,11 +80,11 @@ public class MonitorRunner {
 	
 	public static void startWatchdog() {
 		//wd.startW();
-		wd.startW();
+		wDog.startWatchdog();
 	}
 	
 	public static void createWatchdog() {
-		LOGGER.info("[MONITOR] Starting to watch. / start = "+start);
+		LOGGER.info("[MONITOR] Starting to watch. / start = "+startSignal);
 	
 		//for (int i=0; i<=10; i++) {
 			
@@ -101,7 +101,7 @@ public class MonitorRunner {
 		}
 		*/
 		
-		Watchdog.startW();
+		Watchdog.startWatchdog();
 		//LOGGER.info("[MONITOR] Watching. ");
 		//wd.pauseWatchdog();
 		//wd.startW();
@@ -123,15 +123,15 @@ public class MonitorRunner {
 	}
 	
 	public static void stopWatch() {
-		wd.stopWatchdog();
+		wDog.stopWatchdog();
 	}
 	
 	public static void pauseWatchdog() {
-		wd.pauseWatchdog();
+		wDog.pauseWatchdog();
 	}
 	
 	public static void restartWatchdog() {
-		wd.restartWatchdog();
+		wDog.restartWatchdog();
 	}
 	
 	
@@ -146,7 +146,7 @@ public class MonitorRunner {
 	
 	public static void setStart(boolean b) {
 		LOGGER.info("[MONITOR] Setting start as "+b);
-		start = b;
+		startSignal = b;
 	}
 	
 	public static void stopMonitor() throws InterruptedException {
@@ -160,11 +160,11 @@ public class MonitorRunner {
 	///
 	public void creatLocalRegistry() throws UnknownHostException {
 		LOGGER.info("[MONITOR] Creating a Local Registry instance");
-        ip = InetAddress.getLocalHost();
+        ipAddress = InetAddress.getLocalHost();
 		Integer port;
 		try {
 			port = Integer.valueOf(ReadConfigurations.getPropertyValue("monitor_port"));
-			new RmiRegistryRunner(port, ip.getHostAddress());
+			new RmiRegistryRunner(port, ipAddress.getHostAddress());
 		} catch (Exception e) {
 			LOGGER.severe("[MONITOR] Error: "+e.getMessage());
 			System.exit(0);
@@ -184,7 +184,7 @@ public class MonitorRunner {
             ClientImpl monitor = new ClientImpl();
             //String host = "172.28.2.65";
             // Need to set hostname IP Address in /etc/hosts  
-            String host = ip.getHostAddress();
+            String host = ipAddress.getHostAddress();
             Integer port = Integer.valueOf(ReadConfigurations.getPropertyValue("monitor_port"));
             String url="rmi://"+host+":"+port+"/"+name;
             Naming.bind(url, monitor);
@@ -208,9 +208,9 @@ public class MonitorRunner {
 	    LOGGER.info("[MONITOR] Registering monitor in the Server ");
 	    try
         {
-            SrvRMI = (Master) Naming.lookup(strName);
-            if (!SrvRMI.receiveMonitorNames(ip.getHostAddress())) {
-            	LOGGER.severe("[MONITOR] Error adding"+ip.getHostAddress()+" in the monitors list");
+            srvRMI = (Master) Naming.lookup(strName);
+            if (!srvRMI.receiveMonitorName(ipAddress.getHostAddress())) {
+            	LOGGER.severe("[MONITOR] Error adding"+ipAddress.getHostAddress()+" in the monitors list");
             }
         }
         catch (Exception e)
@@ -234,7 +234,7 @@ public class MonitorRunner {
 	    LOGGER.info("Client: Looking up " + strName + "...");
 	    try
         {
-            SrvRMI = (Master) Naming.lookup(strName);
+            srvRMI = (Master) Naming.lookup(strName);
         }
         catch (Exception e)
         {
@@ -250,7 +250,7 @@ public class MonitorRunner {
 	public static void sendMemAlert() throws InterruptedException {
 		srvConnect("Server");
 		try {
-			if (!SrvRMI.receiveMemAlert()) {
+			if (!srvRMI.receiveMemAlert()) {
 			    LOGGER.warning("[MONITOR] Client: Remote receiveMonitorMessages() call failed.");
 			}
 		} catch (RemoteException e) {
@@ -263,7 +263,7 @@ public class MonitorRunner {
 	public static void sendCPUAlert() throws InterruptedException {
 		srvConnect("Server");
 		try {
-			if (!SrvRMI.receiveCPUAlert()) {
+			if (!srvRMI.receiveCPUAlert()) {
 			    LOGGER.severe("[MONITOR] Client: Remote receiveMonitorMessages() call failed.");
 			}
 		} catch (RemoteException e) {
@@ -273,6 +273,7 @@ public class MonitorRunner {
 		LOGGER.warning("[MONITOR] Sending the CPU alert to Master");
 	}
 	
+	/*
 	public static void sendCreatedMsg(boolean b) {
 		srvConnect("Server");
 		try {
@@ -287,7 +288,7 @@ public class MonitorRunner {
 			e.printStackTrace();
 		}
 	}
-/*	
+
 	public static void sendMasterDeployed(boolean b) {
 		srvConnect("Server");
 		try {
@@ -323,14 +324,14 @@ public class MonitorRunner {
 	
 	public static void sendExecuted(boolean b) throws RemoteException, InterruptedException {
 		srvConnect("Server");
-		if (!SrvRMI.receiveExecuted(b)) {
+		if (!srvRMI.receiveExecuted(b)) {
 		    LOGGER.severe("[MONITOR] Client: Remote sendExecuted() call failed.");
 		}
 	}
 	
 	public static String getMasterIP() throws RemoteException, InterruptedException {
 		srvConnect("Server");
-		String masterIP = SrvRMI.getMasterIP();
+		String masterIP = srvRMI.readMasterAppIP();
 		LOGGER.info("[Monitor] Getting master IP: "+masterIP);
 		return masterIP;
 	}
@@ -339,20 +340,21 @@ public class MonitorRunner {
 	// Executing the actions
 	///
 	
-	public static void executor() {
+	public static void instExecutor() {
 		try {
 			String cl = (String) ReadConfigurations.getPropertyValue("server_auto_scale_class");
-			exec = new Executor(cl);
+			execObj = new Executor(cl);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
+	/*
 	public static boolean createNode() {
 		executor();
 		LOGGER.info("[MONITOR] Creating node!");
-		if (exec.execCreator()){
+		if (execObj.execCreator()){
 			LOGGER.info("[MONITOR] Node created!");
 			return true;
 		} else {
@@ -376,11 +378,12 @@ public class MonitorRunner {
 			return false;
 		}
 	}
+	*/
 	
 	public static boolean deployApp() {
-		executor();
+		instExecutor();
 		LOGGER.info("[MONITOR] Deploying app!");
-		if (exec.execDeploy()){
+		if (execObj.execDeploy()){
 			LOGGER.info("[MONITOR] App deployed!");
 			try {
 				Thread.sleep(5000);
@@ -395,9 +398,9 @@ public class MonitorRunner {
 	}
 	
 	public static boolean execAction(int seq) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		executor();
+		instExecutor();
 		LOGGER.info("[MONITOR] Executing action sequence "+seq);
-		if (exec.execAction(seq)){
+		if (execObj.execAction(seq)){
 			LOGGER.info("[MONITOR] Action executed");
 			return true;
 		} else {
@@ -406,12 +409,13 @@ public class MonitorRunner {
 	}
 	
 	public static boolean deployMaster() {
-		exec.execDeployMaster();
+		instExecutor();
+		execObj.execDeployMaster();
 		return true;
 	}
 	
 	public static boolean startStress() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		exec.execStress();
+		execObj.execStress();
 		return true;
 	}
 	
@@ -426,7 +430,7 @@ public class MonitorRunner {
 	}
 	
 	public static boolean stopStress() {
-		HDFS.setStopStress();
+		HDFS.stopStress();
 		return true;
 	}
 	

@@ -59,9 +59,8 @@ public class HDFS {
     protected static Logger log = Logger.getLogger(HDFS.class.getName());
     protected static FileHandler fh;
 
-    protected static NameNode NNode;
-    protected static NameNode nn;
-    protected static DataNode dn;
+    protected static NameNode nNode;
+    protected static DataNode dNode;
     
     protected static Thread tStress;
     
@@ -138,7 +137,7 @@ public class HDFS {
 			 	conf = readPropertiesHadoop();
 				NameNode.format(conf);
 		        System.out.println("Name: "+MonitorRunner.getMasterIP());
-				NNode = new NameNode(conf);
+				nNode = new NameNode(conf);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 			} catch (InterruptedException e) {
@@ -168,7 +167,7 @@ public class HDFS {
 	            try {
 	                Configuration cfg = readPropertiesHadoop();
 	                String[] args = {"-rollback"};
-	                dn = DataNode.createDataNode(args, cfg);
+	                dNode = DataNode.createDataNode(args, cfg);
 	                Thread.currentThread().join();
 	            } catch (IOException ioe) {
 	            } catch (InterruptedException ie) {
@@ -185,7 +184,7 @@ public class HDFS {
 		*/
     }
 	
-	public static void stress() {
+	public static void startStress() {
 		tStress = new Thread() {
         	public void run() {
         		MonitorRunner.printLog("[STRESS] Starting stress ");
@@ -232,15 +231,11 @@ public class HDFS {
         tStress.start();
 	}
 	
-	public static void setStopStress() {
+	public static void stopStress() {
 		stopStress = true;
 	}
 	
 	public static void setPauseStress(boolean b) {
 		pauseStress = b;
-	}
-	
-	static String test() {
-		return "Testing...";
 	}
 }

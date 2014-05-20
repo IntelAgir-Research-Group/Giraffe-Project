@@ -84,14 +84,11 @@ public class Distributor {
 	}
 	
 	public void methodsSchedule() {
-		
-		// Execution sequence (Create -> Deploy -> Monitor -> Exec)
-		// For now, only one create method is possible
 		if (createMethod != null) {
 			try {
 				createMethod.invoke(runner);
 				// Will wait for all monitors connect
-				System.out.println("Waiting for all monitors");
+				System.out.println("[DISTRIBUTOR] Waiting for all monitors");
 				while(!MasterRunner.allMonitors) {
 					Thread.sleep(1000);
 				}
@@ -108,35 +105,20 @@ public class Distributor {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			/*try {
-				//MasterRunner.sendSignal("CREATE");
-				MasterRunner.createNodes();
-			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			*/
-			System.out.println("Passei por aqui!");
 		}
 			
 		// Deploying Master
 		if (deployMasterMethod > 0) {
-			System.out.println("Setting count as 0");
-			MasterImpl.setExecCount(0);
-			MasterRunner.deployMaster();
+			System.out.println("Setting count as 1");
+			MasterImpl.setExecCount(1);
+			MasterRunner.sendDeployMaster();
 		}
 		
 		// Deploying Slaves
 		if (deploySlaveMethods > 0) {
 			MasterImpl.setExecCount(0);
 			try {
-				MasterRunner.deployApp();
+				MasterRunner.sendDeployApp();
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -152,7 +134,7 @@ public class Distributor {
 		// Starting monitors
 		if (monitorMethods>0) {
 			try {
-				MasterRunner.startMonitoring();
+				MasterRunner.sendStartMonitoring();
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -186,7 +168,7 @@ public class Distributor {
 			Exec e = m.getAnnotation(Exec.class);
 			int seq = e.sequence();
 			try {
-				MasterRunner.execAction(seq);
+				MasterRunner.sendExecAction(seq);
 			} catch (NumberFormatException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

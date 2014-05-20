@@ -28,7 +28,7 @@ public class Watchdog extends Thread {
 	// Monitoring
 	///
 	
-	public static void startW() {
+	public static void startWatchdog() {
 		//Thread.currentThread().yield();
 		
 		new Thread() {
@@ -171,9 +171,5 @@ public class Watchdog extends Thread {
 	public static void restartWatchdog() {
 		MonitorRunner.printLog("[WATCHDOG] Restarting watchdog.");
 		pause = false;
-	}
-	
-	public static void teste() {
-		System.out.println("Testing...");
 	}
 }

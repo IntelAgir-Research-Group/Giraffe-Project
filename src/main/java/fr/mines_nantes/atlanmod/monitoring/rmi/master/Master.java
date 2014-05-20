@@ -5,12 +5,12 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface Master extends Remote {
-    public Boolean receiveMonitorNames(String a) throws RemoteException, NumberFormatException, IOException;
+    public Boolean receiveMonitorName(String a) throws RemoteException, NumberFormatException, IOException;
     public Boolean receiveCPUAlert() throws RemoteException, InterruptedException;
     public Boolean receiveMemAlert() throws RemoteException, InterruptedException;
-    public Boolean receiveCreatedMessage(boolean tf) throws RemoteException, InterruptedException;
+   // public Boolean receiveCreatedMessage(boolean tf) throws RemoteException, InterruptedException;
   //  public Boolean receiveDeployAppMasterMessage(boolean md) throws RemoteException, InterruptedException;
   //  public Boolean receiveDeployAppMessage(boolean ad) throws RemoteException, InterruptedException;
     public Boolean receiveExecuted(boolean exec) throws RemoteException, InterruptedException;
-    public String getMasterIP() throws RemoteException, InterruptedException;
+    public String readMasterAppIP() throws RemoteException, InterruptedException;
 }

@@ -148,7 +148,7 @@ public class HDFSClient {
 
         fileSystem.close();
     }
-
+/*
     public static void main(String[] args) throws IOException {
 
         if (args.length < 1) {
@@ -195,4 +195,5 @@ public class HDFSClient {
 
         System.out.println("Done!");
     }
+    */
 }
