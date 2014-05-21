@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="12.2">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.custom.Node</type>
+    <coordinates>
+      <x>100</x>
+      <y>120</y>
+      <w>230</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>center: &lt;&lt;Virtual Machine&gt;&gt;
+center: {OS: Linux; Language: Java}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Node</type>
+    <coordinates>
+      <x>70</x>
+      <y>60</y>
+      <w>710</w>
+      <h>310</h>
+    </coordinates>
+    <panel_attributes>center:&lt;&lt;Cloud Computing Environment&gt;&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Node</type>
+    <coordinates>
+      <x>480</x>
+      <y>100</y>
+      <w>260</w>
+      <h>250</h>
+    </coordinates>
+    <panel_attributes>center:&lt;&lt;Virtual Machine&gt;&gt;
+center: {OS: Linux; Language: Java}
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>300</x>
+      <y>130</y>
+      <w>200</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=-
+&lt;&lt;RMI&gt;&gt;
+m1=1
+m2=*</panel_attributes>
+    <additional_attributes>30;50;180;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Component</type>
+    <coordinates>
+      <x>140</x>
+      <y>190</y>
+      <w>130</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes> 
+Master</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Component</type>
+    <coordinates>
+      <x>540</x>
+      <y>160</y>
+      <w>130</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes> 
+Monitor</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Component</type>
+    <coordinates>
+      <x>540</x>
+      <y>250</y>
+      <w>130</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes> 
+Cloud App
+Component</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
