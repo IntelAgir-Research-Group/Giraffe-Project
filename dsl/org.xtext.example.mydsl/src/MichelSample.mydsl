@@ -1,0 +1,78 @@
+// << Why to use >>
+// - To prevent programming errors
+// - To make the code more simple an intuitive
+
+// << What to do >>
+// >> Create a Eclipse plugin to edit the definitions file
+
+/////////////////////
+// REQUIRED
+/////////////////////
+
+cloudProvider g5000 {
+	cloudType: VirtualBox
+	cloudMgmAddress: '127.0.0.1'
+	cloudCredential: './credentials/Cred1.cred'
+	newMachinesScript: 'create.sh'
+	geoZone: 'EUA'
+	//cloudUser: 'user'
+	//cloudPassword: 'password'
+}
+
+virtualMachine vm1 {
+	vM: Linux1-CloudTest
+	cloudProvider: g5000
+}
+
+create create1 {
+	vMachine: vm1 
+	initialMachines: 2
+	initialIncrement: 1
+}
+
+deploy deploy1 {
+	deployApp: HDFS
+	deployType: master
+}
+
+deploy deploy2 {
+	deployApp: HDFS
+	deployType: slave
+}
+
+deployApp HDFS {
+	// If the HDFS is not in the JAR
+	class: 'MyClass'
+	/// If the methods name is different than the defaults
+	deployMasterMethod: 'deployM'
+	deploySlaveMethod: 'deployS' 
+}
+
+monitor monitor1 {
+	range: '*'
+	monitoringType: reactive
+}
+
+stress stress1 {
+	range: '*-1'
+	stressClass: 'Stress'
+	stressMethod: 'stress'
+}
+
+//////////////
+// OPTIONAL
+//////////////
+	
+deployType master {
+	range: "1" // By default
+}
+
+deployType slave {
+	range: "*-1" // By default
+}
+
+action action1 {
+	range: '*'
+	class: "MyActions"
+	method: "doSomething"
+}
