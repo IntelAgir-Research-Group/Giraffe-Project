@@ -3,12 +3,13 @@
 username='root'
 password='123'
 vmname=$1
+sourcevmname=$2
 
 if [ "$1" == "" ]
 then
 	echo "You need to specify a name for the new machine. Ex.: create-vm.sh MachineName"
 else
-VBoxManage clonevm "Linux1-CloudTest" --name "$1" --register
+VBoxManage clonevm $sourcevmname --name "$1" --register
 
 echo "Starting VM $1"
 VBoxManage startvm "$1"

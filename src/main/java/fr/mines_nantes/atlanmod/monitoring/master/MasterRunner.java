@@ -17,6 +17,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.virtualbox_4_1.VirtualBoxManager;
 
 import fr.mines_nantes.atlanmod.ReadConfigurations;
+import fr.mines_nantes.atlanmod.dsl.Interactor;
 import fr.mines_nantes.atlanmod.monitoring.frameworks.HDFS;
 import fr.mines_nantes.atlanmod.monitoring.monitor.MonitorRunner;
 import fr.mines_nantes.atlanmod.monitoring.rmi.RmiRegistryRunner;
