@@ -26,7 +26,7 @@ virtualMachine vm1 {
 
 create create1 {
 	vMachine: vm1 
-	initialMachines: 2
+	initialMachines: 1
 	initialIncrement: 1
 }
 
@@ -42,9 +42,9 @@ deploy deploy2 {
 
 deployApp HDFS {
 	// If the HDFS is not in the JAR
-	class: 'MyClass'
+	class: 'fr.mines_nantes.atlanmod.monitoring.frameworks.HDFS'
 	/// If the methods name is different than the defaults
-	deployMasterMethod: 'deployM'
+	deployMasterMethod: 'deployMaster'
 	deploySlaveMethod: 'deployS' 
 }
 
@@ -54,7 +54,7 @@ monitor monitor1 {
 }
 
 stress stress1 {
-	range: '*-1'
+	range: '*'
 	stressClass: 'Stress'
 	stressMethod: 'stress'
 }
@@ -68,7 +68,7 @@ deployType master {
 }
 
 deployType slave {
-	range: "*-1" // By default
+	range: "2-n" // By default
 }
 
 action action1 {

@@ -22,6 +22,7 @@ import fr.mines_nantes.atlanmod.dsl.giraffeDSL.CloudProvider;
 import fr.mines_nantes.atlanmod.dsl.giraffeDSL.Create;
 import fr.mines_nantes.atlanmod.dsl.giraffeDSL.Deploy;
 import fr.mines_nantes.atlanmod.dsl.giraffeDSL.DeployApp;
+import fr.mines_nantes.atlanmod.dsl.giraffeDSL.DeployAppClassType;
 import fr.mines_nantes.atlanmod.dsl.giraffeDSL.DeployAppMasterMethodType;
 import fr.mines_nantes.atlanmod.dsl.giraffeDSL.DeployAppSlaveMethodType;
 import fr.mines_nantes.atlanmod.dsl.giraffeDSL.DeployType;
@@ -40,10 +41,11 @@ public class Interactor extends GiraffeDSLGenerator {
 	
 	// List of features
 	List<Object> createFeatures = new ArrayList<Object>();
-	List<Object> deployFeatures = new ArrayList<Object>();
+	List<List<Object>> deployFeatures = new ArrayList<List<Object>>();
+	//List<Object> deployFeatures = new ArrayList<Object>();
 	List<Object> vMachineFeatures = new ArrayList<Object>();
 	List<Object> cloudProviderFeatures = new ArrayList<Object>();
-	List<Object> deployTypeFeatures = new ArrayList<Object>();
+	List<List<Object>> deployTypeFeatures = new ArrayList<List<Object>>();
 	List<Object> deployAppFeatures = new ArrayList<Object>();
 	List<Object> monitorFeatures = new ArrayList<Object>();
 	List<Object> stressFeatures = new ArrayList<Object>();
@@ -57,11 +59,11 @@ public class Interactor extends GiraffeDSLGenerator {
 		this.createFeatures.add(feature);
 	}
 
-	public List<Object> getDeployFeatures() {
+	public List<List<Object>> getDeployFeatures() {
 		return deployFeatures;
 	}
 
-	public void addDeployFeatures(Object feature) {
+	public void addDeployFeatures(List<Object> feature) {
 		this.deployFeatures.add(feature);
 	}
 
@@ -81,11 +83,11 @@ public class Interactor extends GiraffeDSLGenerator {
 		this.cloudProviderFeatures.add(feature);
 	}
 
-	public List<Object> getDeployTypeFeatures() {
+	public List<List<Object>> getDeployTypeFeatures() {
 		return deployTypeFeatures;
 	}
 
-	public void addDeployTypeFeatures(Object feature) {
+	public void addDeployTypeFeatures(List<Object> feature) {
 		this.deployTypeFeatures.add(feature);
 	}
 
@@ -162,16 +164,18 @@ public class Interactor extends GiraffeDSLGenerator {
 	    Iterable<Deploy> _filter_1 = Iterables.<Deploy>filter(_iterable_1, Deploy.class);
 	    for (final Deploy d : _filter_1) {
 	    	System.out.println(d.getName());
+	    	List<Object> listFeatures = new ArrayList<Object>();
 		      // App feature
 		      if (d.getDeployOne().size() > 0) {
 			      System.out.println("Feature ("+d.getDeployOne().get(0).getType().getName().toString()+")");
-			      addDeployFeatures(d.getDeployOne().get(0).getType().getName());
+			      listFeatures.add(d.getDeployOne().get(0).getType().getName().toString());
 		      }
 		      // Type feature
 		      if (d.getDeployTwo().size() > 0) {
 		    	  System.out.println("Feature ("+d.getDeployTwo().get(0).getType().getName().toString()+")");
-		    	  addDeployFeatures(d.getDeployTwo().get(0).getType().getName());
+		    	  listFeatures.add(d.getDeployTwo().get(0).getType().getName().toString());
 		      }
+		      addDeployFeatures(listFeatures);
 	    }
 	    
 	    // VirtualMachine
@@ -225,10 +229,13 @@ public class Interactor extends GiraffeDSLGenerator {
 	    Iterable<EObject> _iterable_4 = IteratorExtensions.<EObject>toIterable(_allContents_4);
 	    Iterable<DeployType> _filter_4 = Iterables.<DeployType>filter(_iterable_4, DeployType.class);
 	    for (final DeployType dt : _filter_4) {
+	      List<Object> listTypes = new ArrayList<Object>();
 	      System.out.println(dt.getName());
 	      // Range feature
 	      System.out.println("Feature ("+new String(dt.getRange().get(0).getType().getBytes())+")");
-	      addDeployTypeFeatures(new String(dt.getRange().get(0).getType().getBytes()));
+	      listTypes.add(dt.getName());
+	      listTypes.add(new String(dt.getRange().get(0).getType().getBytes()));
+	      addDeployTypeFeatures(listTypes);
 	    }
 	    
 	    // DeployApp
@@ -238,6 +245,11 @@ public class Interactor extends GiraffeDSLGenerator {
 	    for (final DeployApp da : _filter_5) {
 	      System.out.println(da.getName());
 	      // MasterMethod feature
+	      if (da.getClass_().size() > 0) {
+	    	  DeployAppClassType dmcF = da.getClass_().get(0);
+	    	  System.out.println("Feature ("+new String(dmcF.getType().getBytes())+")");
+	    	  addDeployAppFeatures(new String(dmcF.getType().getBytes()));
+	      }
 	      if (da.getDeployMasterMethod().size() > 0) {
 	    	  DeployAppMasterMethodType dmmF = da.getDeployMasterMethod().get(0);
 	    	  System.out.println("Feature ("+new String(dmmF.getType().getBytes())+")");

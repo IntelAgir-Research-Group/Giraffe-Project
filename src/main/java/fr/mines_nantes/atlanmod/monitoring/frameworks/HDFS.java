@@ -28,7 +28,9 @@ import org.apache.hadoop.conf.Configuration;
 
 
 
+
 import fr.mines_nantes.atlanmod.monitoring.monitor.MonitorRunner;
+
 
 
 
@@ -238,4 +240,18 @@ public class HDFS {
 	public static void setPauseStress(boolean b) {
 		pauseStress = b;
 	}
+	
+	// Deploy methods
+	public void deployMaster() {
+		MonitorRunner.printLog("[HDFS] Creating NameNode!");
+		try {
+			HDFS.startNameNode();
+		} catch (Exception e) {
+			MonitorRunner.printLog("[HDFS] Error: "+e.getMessage());
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		MonitorRunner.printLog("[HDFS] NameNode created!");
+	}
+	
 }

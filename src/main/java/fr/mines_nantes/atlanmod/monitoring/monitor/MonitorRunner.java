@@ -340,14 +340,9 @@ public class MonitorRunner {
 	// Executing the actions
 	///
 	
-	public static void instExecutor() {
-		try {
-			String cl = (String) ReadConfigurations.getPropertyValue("server_auto_scale_class");
-			execObj = new Executor(cl);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public static void instExecutor(String instClass) {
+		String cl = instClass;
+		execObj = new Executor(cl);
 	}
 	
 	/*
@@ -381,7 +376,7 @@ public class MonitorRunner {
 	*/
 	
 	public static boolean deployApp() {
-		instExecutor();
+	//	instExecutor();
 		LOGGER.info("[MONITOR] Deploying app!");
 		if (execObj.execDeploy()){
 			LOGGER.info("[MONITOR] App deployed!");
@@ -398,7 +393,7 @@ public class MonitorRunner {
 	}
 	
 	public static boolean execAction(int seq) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		instExecutor();
+	//	instExecutor();
 		LOGGER.info("[MONITOR] Executing action sequence "+seq);
 		if (execObj.execAction(seq)){
 			LOGGER.info("[MONITOR] Action executed");
@@ -408,9 +403,9 @@ public class MonitorRunner {
 		}
 	}
 	
-	public static boolean deployMaster() {
-		instExecutor();
-		execObj.execDeployMaster();
+	public static boolean deployMaster(String masterClass, String masterMethod) {
+		instExecutor(masterClass);
+		execObj.execDeployMaster(masterMethod);
 		return true;
 	}
 	

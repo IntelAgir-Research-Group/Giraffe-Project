@@ -16,8 +16,33 @@ public class Executor {
 	private static Object runner;
 	
 	Method[] methods;
+	Object inst;
+	String args[];
 	
 	public Executor(String className) {
+		Class<?> c;
+		try {
+			c = Class.forName(className);
+			inst = c.newInstance();
+			methods = c.getDeclaredMethods();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+		/*
 		cName = className;
 		try {
 			runner = Class.forName(cName).newInstance();
@@ -32,6 +57,7 @@ public class Executor {
 			e1.printStackTrace();
 		}
         methods = runner.getClass().getMethods();
+        */
 	}
 	
 	public boolean execCreator() {
@@ -77,8 +103,25 @@ public class Executor {
 		return true;
 	}
 	
-	public boolean execDeployMaster() {
+	public boolean execDeployMaster(String masterMethod) {
 		MonitorRunner.printLog("[EXECUTOR] Deploying the master");
+		for (Method m : methods) {
+			if (m.getName().equals(masterMethod)) {
+				m.setAccessible(true);
+				try {
+					m.invoke(inst, args);
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 		// Creating a execution sequence
 		for (Method method : methods) {
 			Deploy c = method.getAnnotation(Deploy.class);

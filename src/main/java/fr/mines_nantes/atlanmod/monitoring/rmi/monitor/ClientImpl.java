@@ -62,8 +62,8 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
 			return true;
 	}
 
-	public synchronized void receiveDeployMaster() throws RemoteException, InterruptedException {
-		MonitorRunner.sendExecuted(MonitorRunner.deployMaster());
+	public synchronized void receiveDeployMaster(String masterClass, String masterMethod) throws RemoteException, InterruptedException {
+		MonitorRunner.sendExecuted(MonitorRunner.deployMaster(masterClass, masterMethod));
 	}
 
 	public synchronized void receiveDeployApp() throws RemoteException, InterruptedException {

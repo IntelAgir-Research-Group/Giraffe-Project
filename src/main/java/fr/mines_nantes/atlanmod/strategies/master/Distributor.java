@@ -9,13 +9,19 @@ import java.util.List;
 import java.util.Random;
 import java.lang.annotation.Annotation;
 
+
+
+/*
 import fr.mines_nantes.atlanmod.ReadConfigurations;
 import fr.mines_nantes.atlanmod.annotations.Create;
 import fr.mines_nantes.atlanmod.annotations.Deploy;
-import fr.mines_nantes.atlanmod.annotations.Exec;
 import fr.mines_nantes.atlanmod.annotations.Monitor;
 import fr.mines_nantes.atlanmod.annotations.Stress;
+*/
 import fr.mines_nantes.atlanmod.dsl.Interactor;
+import fr.mines_nantes.atlanmod.dsl.giraffeDSL.Deploy;
+import fr.mines_nantes.atlanmod.dsl.giraffeDSL.DeployApp;
+import fr.mines_nantes.atlanmod.dsl.giraffeDSL.DeployType;
 import fr.mines_nantes.atlanmod.monitoring.master.MasterRunner;
 import fr.mines_nantes.atlanmod.monitoring.monitor.MonitorRunner;
 import fr.mines_nantes.atlanmod.monitoring.rmi.master.MasterImpl;
@@ -78,7 +84,7 @@ public class Distributor {
 	public Distributor(String className) {
 		cName = className;
 		methodsClassify();
-		methodsSchedule();
+		// methodsSchedule();
 	}
 	
 	public void methodsClassify() {
@@ -91,6 +97,8 @@ public class Distributor {
 			Interactor interactor = new Interactor("MichelSample.gsf");
 			interactor.doParse();
 			
+			// Create
+			/*
 			List<Object> createFeatures = interactor.getCreateFeatures();
 			if (createFeatures.size() > 0) {
 				int monitors = (Integer) createFeatures.get(1);
@@ -134,6 +142,42 @@ public class Distributor {
 					}
 				}
 			}
+			*/
+			
+			// Deploy
+			List<List<Object>> deployFeatures = interactor.getDeployFeatures();
+			if (deployFeatures.size() > 0) {
+				System.out.println("I was here... ");
+				for (List<Object> deployF: deployFeatures) {
+					System.out.println("First for...");
+					String app = (String) deployF.get(0);
+					List<Object> appFeatures = interactor.getDeployAppFeatures();
+					if (appFeatures.size() > 0) {
+						System.out.println("App features...");
+						String appClass = (String) appFeatures.get(0);
+						String appMasterMethod = (String) appFeatures.get(1);
+						String appSlaveMethod = (String) appFeatures.get(2);
+						
+						List<List<Object>> typeFeatures = interactor.getDeployTypeFeatures();
+						String masterMethod = (String) appFeatures.get(1);
+						
+						for (List<Object> typeF : typeFeatures) {
+							System.out.println("Types");
+							if (typeF.get(0).toString().equals("master")) {
+								System.out.println(typeF.get(0).toString());
+								String masterRange = typeF.get(1).toString();
+								// Send master deploying
+								MasterImpl.setExecCount(1);
+								MasterRunner.sendDeployMaster(appClass, appMasterMethod, masterRange);
+							} else {
+								System.out.println("slave");
+								String slaveRange = typeF.get(1).toString();
+								// Do the deploy of slaves
+							}
+						}
+					}	
+				}
+			}  
 			
 			/*
 			
@@ -185,6 +229,7 @@ public class Distributor {
 		*/
 	}
 	
+	/*
 	public void methodsSchedule() {
 		if (createMethod != null) {
 			try {
@@ -284,4 +329,5 @@ public class Distributor {
 		}
 		
 	}
+	*/
 }

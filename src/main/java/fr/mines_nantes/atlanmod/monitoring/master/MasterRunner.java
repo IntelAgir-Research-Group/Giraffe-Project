@@ -8,6 +8,7 @@ import java.rmi.RemoteException;
 import java.security.AccessControlException;
 import java.security.Permission;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -174,16 +175,17 @@ public class MasterRunner {
 		}
 	}
 	
-	public static void sendMasterDeploy() throws IOException, InterruptedException {
+	public static void sendMasterDeploy(String masterClass, String masterMethod, String masterRange) throws IOException, InterruptedException {
 		int port = Integer.valueOf(ReadConfigurations.getPropertyValue("monitor_port"));
 		int count;
 		String slave;
+		List<String> monitors = getMonitorsList(masterRange);
 		LOGGER.info("[SERVER] Sending master deploy signal to monitors");
-		for (count=0; count<monitorAddresses.size();  count++) {
-			  slave = monitorAddresses.get(count);
+		for (count=0; count<monitors.size();  count++) {
+			  slave = monitors.get(count);
 		      clientRMI = monitorConnect("Monitor", slave, port);
 		      LOGGER.info("[SERVER] RMI Client: "+clientRMI.toString());
-		      clientRMI.receiveDeployMaster();
+		      clientRMI.receiveDeployMaster(masterClass, masterMethod);
 		}
 		LOGGER.info("[SERVER] Master deploy signal sent");
 	}
@@ -236,9 +238,9 @@ public class MasterRunner {
 	}
 	*/
 	
-	public static boolean sendDeployMaster() {
+	public static boolean sendDeployMaster(String appClass, String masterMethod, String masterRange) {
 		try {
-			MasterRunner.sendMasterDeploy();
+			MasterRunner.sendMasterDeploy(appClass, masterMethod, masterRange);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -326,9 +328,46 @@ public class MasterRunner {
 		executed = true;
 	}
 	
+	public static List<String> getMonitorsList(String range) {
+		List<String> monitorAddr = new ArrayList<String>();
+		if (range.length() == 1 && !range.equals("*")) {
+			int i = Integer.valueOf(range);
+			i--;
+			monitorAddr.add(monitorAddresses.get(i));
+		} else {
+			if (range.equals("*")) {
+				monitorAddr = monitorAddresses;
+			} else {
+				if (range.length() > 1) {
+					System.out.println(range);
+					String[] parts = range.split("-");
+					String part1 = parts[0];
+					int p1 = Integer.valueOf(part1);
+					p1--;
+					if (parts.length > 1) {
+						String part2 = parts[1];
+						int p2 = Integer.valueOf(part2);
+						if (part2.length() > 0) { 
+							if (!part2.equals("n")) {
+								for (int i=p1; i < monitorAddresses.size(); i++) {
+									monitorAddr.add(monitorAddresses.get(i));
+								}
+							} else {
+								for (int i=p1; i <= p2; i++) {
+									monitorAddr.add(monitorAddresses.get(i));
+								}
+							}
+						}
+					}
+				}
+				// Needs to be implemented
+				// 1,3,6,7
+			}
+		}
+		return monitorAddr;
+	}
+	
 	public static void main(String args[]) throws InterruptedException, IOException {
-		
-		
 			// To prevent possible problems when nodes trying to connect to master
 			if (System.getSecurityManager() == null) {
 				System.setSecurityManager (new RMISecurityManager() {
