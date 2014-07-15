@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<plugin>
+
+  <extension point="org.eclipse.emf.ecore.generated_package">
+    <package 
+       uri = "http://www.mines_nantes.fr/atlanmod/giraffe/GiraffeDSL" 
+       class = "fr.mines_nantes.atlanmod.giraffe.giraffeDSL.GiraffeDSLPackage"
+       genModel = "model/generated/GiraffeDSL.genmodel" /> 
+	
+  </extension>
+
+
+
+</plugin>

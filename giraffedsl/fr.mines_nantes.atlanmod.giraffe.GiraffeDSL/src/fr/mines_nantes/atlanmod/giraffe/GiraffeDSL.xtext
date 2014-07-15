@@ -1,0 +1,247 @@
+grammar fr.mines_nantes.atlanmod.giraffe.GiraffeDSL with org.eclipse.xtext.common.Terminals
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+generate giraffeDSL "http://www.mines_nantes.fr/atlanmod/giraffe/GiraffeDSL"
+
+////
+// Finish the deployment-definitions and deployment
+// Review the elements names <-> Model names
+// Blocks of Code
+// Create a Xtend GiraffeDSL to Java code creator (Annotations + Return statements), only to extract the elements
+//// 
+
+GiraffeMetaModel returns GiraffeMetaModel:
+		imports += Import*
+		environment=Environment
+		deploymentdefinitions=DeploymentDefinitions
+		deployment=Deployment
+;
+
+Environment:
+	{Environment}
+	'environment'
+	'{'
+	 	(auths += Auth)*
+	 	(resources += Resource)*
+	 	(dependencies += Dependency)*
+	 	(virtualmachines += VirtualMachine)*
+	 	(providers += Providers)* 	
+	'}';
+
+DeploymentDefinitions:
+	{DeploymentDefinitions}
+	'deployment-definitions'
+	'{'
+		(artifacts += (Artifact | ConfArtifact))*
+		(nodesets += Nodeset)*
+	'}'
+;
+
+Deployment:
+	'deployment'
+	'{'
+		setups=Setup
+		deploys=Deploy
+	'}'
+;
+
+Import:
+  'import' importedNamespace = QualifiedNameWithWildcard
+;
+
+QualifiedNameWithWildcard:
+  QualifiedName '.*'?
+;
+
+QualifiedName:
+  ID ('.' ID)*
+;
+
+////
+// GiraffeDSL Elements
+////
+/////////////////////////////////////////////////////////////////
+VirtualMachine:
+	'virtualmachine' name=EString ":=" (so=NativeSO distribution=NativeDistribution version=EFloat) "," (auth=[Auth])? "," (dep+=[Dependency])* // "," (requirements+=Requeriments)*
+;
+
+Requeriments:
+	native=NativeRequirement | other=EString
+;
+////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////
+Providers returns Providers:
+	Provider | OtherProvider
+;
+
+Provider returns Provider:
+	'provider' type=NativeProvType name=EString ":=" (authMethod=[Auth]) "," (resources=[Resource]) "," (vm=[VirtualMachine]) "," host=EString
+	;
+
+OtherProvider returns OtherProvider:
+	'provider' type='other' name=EString ":=" (authMethod=[Auth]) "," (resources=[Resource]) "," (vm=[VirtualMachine]) "," host=EString "{"
+		 imports += Import*
+		
+		'connection' '{'
+		
+		'}'
+		
+		'resources' '{'
+		
+		'}'
+		
+		'virtualmachine' '{'
+		
+		'}'
+	
+	"}";
+///////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////
+Auth:
+	Password | Key | Credential
+;
+
+Password:
+	'auth' type='password' name=EString ":=" username=EString "," password=EString
+;
+
+Key:
+	'auth' type='key' name=EString ":=" keyFile=EString
+;
+
+Credential:
+	'auth' type='credential' name=EString ":=" credentialFile=EString 
+;
+///////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////
+Resource returns Resource:
+	'resources' name=EString ":=" cpu=CPU "," memory=INT "," disk=INT "," relax=INT
+;
+///////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////
+Dependency returns Dependency:
+	Install | Service | File
+	;
+
+Install returns Install:
+	'dependency' type='install' name=EString ":=" depName=EString "," depVersion=EFloat
+	;
+
+Service returns Service:
+	'dependency' type='service' srvAction=SrvSignal name=EString ":=" serviceName=EString
+	;
+
+File returns File:
+	'dependency' type='file' fileType=FileType name=EString ":=" location=EString
+	;
+///////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////
+Artifact returns Artifact:
+	Code | CodeExternal | Script | ScriptCommand | ScriptBlock
+;
+
+ConfArtifact returns ConfArtifact:
+	Config | ConfigBlock
+;
+
+Config returns Config:
+	'artifact' type='config' name=EString ':=' localFile=EString destFile=EString
+;
+
+ConfigBlock returns ConfigBlock:
+	'artifact' type='config-block' name=EString ':=' destFile=EString '{'config=EString '}'
+;
+
+Code returns Code:
+	'artifact' type='code' name=EString ':=' '{' code=EString '}'
+	;
+
+CodeExternal returns CodeExternal:
+	'artifact' type='code-external' name=EString ':=' class=EString ',' method=EString
+;
+
+Script returns Script:
+	'artifact' type='script' name=EString ':=' scriptFile=EString
+;
+
+ScriptCommand returns ScriptCommand:
+	'artifact' type='script-command' name=EString ':=' scriptCommand=EString
+;
+
+ScriptBlock returns ScriptBlock:
+	'artifact' type='script-block' name=EString ':=' '{' block=EString 
+	
+	'}'
+;
+/////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////
+Nodeset returns Nodeset:
+	'nodeset' name=EString ':=' range=EString
+;
+/////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////
+Setup returns Setup:
+	{Setup}
+	'setup' name=EString ':=' provider=[Providers] ',' numberMachines=EInt ',' autoscale=EBoolean ',' predictive=EBoolean
+;
+/////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////
+Deploy returns Deploy:
+	'deploy' name=EString ':=' 'in' (setups+=[Setup])* 'timeout' timeout=EInt '{'
+		(executions+=Execution)*	
+	'}'
+;
+
+Execution returns Execution:
+	'exec' name=EString ':=' (code=[Artifact]) (',' (config+=[ConfArtifact]))? ',' (nodes=[Nodeset]) ',' seq=EInt 
+;
+
+/////////////////////////////////////////////////////////////
+
+////
+// GiraffeDSL Types
+////
+
+EString returns ecore::EString:
+	STRING | ID;
+	
+EFloat returns ecore::EFloat:
+	INT"."INT | INT
+;
+
+EInt returns ecore::EInt:
+	'-'? INT;
+
+EBoolean returns ecore::EBoolean:
+	'true' | 'false';
+
+CPU returns ecore::EString:
+	INT"*"INT
+;
+enum NativeProvType returns NativeProvType:
+				amazon = 'amazon' | google = 'google' | g5000 = 'g5000' | virtualbox = 'virtualbox';
+				
+enum NativeSO returns NativeSO:
+				linux = 'linux';
+				
+enum NativeRequirement returns NativeRequirement:
+				ssh = 'ssh' | tomcat = 'tomcat' | apache = 'httpd';
+				
+enum NativeDistribution returns NativeDistribution:
+				ubuntu = 'ubuntu' | debian = 'debian' | centos = 'centos' | fedora = 'fedora';
+
+enum SrvSignal returns SrvSignal:
+				start = 'start' | restart = 'restart' | stop = 'stop';
+
+enum FileType returns FileType:
+				local = 'local' | remote = 'remote';
+				
+enum MonitoringType returns MonitoringType:
+				predictive = 'predictive' | reactive = 'reactive';

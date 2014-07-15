@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/fr.mines_nantes.atlanmod.giraffe.GiraffeDSL/src-gen"
+    editDirectory="/fr.mines_nantes.atlanmod.giraffe.GiraffeDSL.edit/src" editorDirectory="/fr.mines_nantes.atlanmod.giraffe.GiraffeDSL.editor/src"
+    modelPluginID="fr.mines_nantes.atlanmod.giraffe.GiraffeDSL" forceOverwrite="true"
+    modelName="GiraffeDSL" updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    complianceLevel="5.0" copyrightFields="false" editPluginID="fr.mines_nantes.atlanmod.giraffe.GiraffeDSL.edit"
+    editorPluginID="fr.mines_nantes.atlanmod.giraffe.GiraffeDSL.editor" runtimeVersion="2.9">
+  <genPackages prefix="GiraffeDSL" basePackage="fr.mines_nantes.atlanmod.giraffe"
+      disposableProviderFactory="true" fileExtensions="giraffe" ecorePackage="GiraffeDSL.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="GiraffeDSL.ecore#//NativeProvType">
+      <genEnumLiterals ecoreEnumLiteral="GiraffeDSL.ecore#//NativeProvType/amazon"/>
+      <genEnumLiterals ecoreEnumLiteral="GiraffeDSL.ecore#//NativeProvType/google"/>
+      <genEnumLiterals ecoreEnumLiteral="GiraffeDSL.ecore#//NativeProvType/g5000"/>
+      <genEnumLiterals ecoreEnumLiteral="GiraffeDSL.ecore#//NativeProvType/virtualbox"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="GiraffeDSL.ecore#//NativeSO">
+      <genEnumLiterals ecoreEnumLiteral="GiraffeDSL.ecore#//NativeSO/linux"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="GiraffeDSL.ecore#//NativeRequirement">
+      <genEnumLiterals ecoreEnumLiteral="GiraffeDSL.ecore#//NativeRequirement/ssh"/>
+      <genEnumLiterals ecoreEnumLiteral="GiraffeDSL.ecore#//NativeRequirement/tomcat"/>
+      <genEnumLiterals ecoreEnumLiteral="GiraffeDSL.ecore#//NativeRequirement/apache"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="GiraffeDSL.ecore#//NativeDistribution">
+      <genEnumLiterals ecoreEnumLiteral="GiraffeDSL.ecore#//NativeDistribution/ubuntu"/>
+      <genEnumLiterals ecoreEnumLiteral="GiraffeDSL.ecore#//NativeDistribution/debian"/>
+      <genEnumLiterals ecoreEnumLiteral="GiraffeDSL.ecore#//NativeDistribution/centos"/>
+      <genEnumLiterals ecoreEnumLiteral="GiraffeDSL.ecore#//NativeDistribution/fedora"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="GiraffeDSL.ecore#//SrvSignal">
+      <genEnumLiterals ecoreEnumLiteral="GiraffeDSL.ecore#//SrvSignal/start"/>
+      <genEnumLiterals ecoreEnumLiteral="GiraffeDSL.ecore#//SrvSignal/restart"/>
+      <genEnumLiterals ecoreEnumLiteral="GiraffeDSL.ecore#//SrvSignal/stop"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="GiraffeDSL.ecore#//FileType">
+      <genEnumLiterals ecoreEnumLiteral="GiraffeDSL.ecore#//FileType/local"/>
+      <genEnumLiterals ecoreEnumLiteral="GiraffeDSL.ecore#//FileType/remote"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="GiraffeDSL.ecore#//MonitoringType">
+      <genEnumLiterals ecoreEnumLiteral="GiraffeDSL.ecore#//MonitoringType/predictive"/>
+      <genEnumLiterals ecoreEnumLiteral="GiraffeDSL.ecore#//MonitoringType/reactive"/>
+    </genEnums>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//GiraffeMetaModel">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeDSL.ecore#//GiraffeMetaModel/imports"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeDSL.ecore#//GiraffeMetaModel/environment"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeDSL.ecore#//GiraffeMetaModel/deploymentdefinitions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeDSL.ecore#//GiraffeMetaModel/deployment"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//Environment">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeDSL.ecore#//Environment/auths"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeDSL.ecore#//Environment/resources"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeDSL.ecore#//Environment/dependencies"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeDSL.ecore#//Environment/virtualmachines"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeDSL.ecore#//Environment/providers"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//DeploymentDefinitions">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeDSL.ecore#//DeploymentDefinitions/artifacts"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeDSL.ecore#//DeploymentDefinitions/nodesets"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//Deployment">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeDSL.ecore#//Deployment/setups"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeDSL.ecore#//Deployment/deploys"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//Import">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Import/importedNamespace"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//VirtualMachine">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//VirtualMachine/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//VirtualMachine/so"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//VirtualMachine/distribution"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//VirtualMachine/version"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference GiraffeDSL.ecore#//VirtualMachine/auth"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference GiraffeDSL.ecore#//VirtualMachine/dep"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//Requeriments">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Requeriments/native"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Requeriments/other"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//Providers">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Providers/name"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference GiraffeDSL.ecore#//Providers/authMethod"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference GiraffeDSL.ecore#//Providers/resources"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference GiraffeDSL.ecore#//Providers/vm"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Providers/host"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//Provider">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Provider/type"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//OtherProvider">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//OtherProvider/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeDSL.ecore#//OtherProvider/imports"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//Auth">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Auth/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Auth/name"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//Password">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Password/username"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Password/password"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//Key">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Key/keyFile"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//Credential">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Credential/credentialFile"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//Resource">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Resource/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Resource/cpu"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Resource/memory"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Resource/disk"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Resource/relax"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//Dependency">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Dependency/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Dependency/name"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//Install">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Install/depName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Install/depVersion"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//Service">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Service/srvAction"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Service/serviceName"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//File">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//File/fileType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//File/location"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//Artifact">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Artifact/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Artifact/name"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//ConfArtifact">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//ConfArtifact/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//ConfArtifact/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//ConfArtifact/destFile"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//Config">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Config/localFile"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//ConfigBlock">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//ConfigBlock/config"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//Code">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Code/code"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//CodeExternal">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//CodeExternal/class"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//CodeExternal/method"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//Script">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Script/scriptFile"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//ScriptCommand">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//ScriptCommand/scriptCommand"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//ScriptBlock">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//ScriptBlock/block"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//Nodeset">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Nodeset/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Nodeset/range"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//Setup">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Setup/name"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference GiraffeDSL.ecore#//Setup/provider"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Setup/numberMachines"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Setup/autoscale"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Setup/predictive"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//Deploy">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Deploy/name"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference GiraffeDSL.ecore#//Deploy/setups"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Deploy/timeout"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeDSL.ecore#//Deploy/executions"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeDSL.ecore#//Execution">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Execution/name"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference GiraffeDSL.ecore#//Execution/code"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference GiraffeDSL.ecore#//Execution/config"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference GiraffeDSL.ecore#//Execution/nodes"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeDSL.ecore#//Execution/seq"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

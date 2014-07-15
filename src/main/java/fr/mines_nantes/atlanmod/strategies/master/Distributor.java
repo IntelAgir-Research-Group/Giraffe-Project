@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Random;
 import java.lang.annotation.Annotation;
 
-
-
 /*
 import fr.mines_nantes.atlanmod.ReadConfigurations;
 import fr.mines_nantes.atlanmod.annotations.Create;
@@ -18,6 +16,7 @@ import fr.mines_nantes.atlanmod.annotations.Deploy;
 import fr.mines_nantes.atlanmod.annotations.Monitor;
 import fr.mines_nantes.atlanmod.annotations.Stress;
 */
+// Generate Jar
 import fr.mines_nantes.atlanmod.dsl.Interactor;
 import fr.mines_nantes.atlanmod.dsl.giraffeDSL.Deploy;
 import fr.mines_nantes.atlanmod.dsl.giraffeDSL.DeployApp;

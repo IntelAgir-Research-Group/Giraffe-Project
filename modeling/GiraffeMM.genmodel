@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/GiraffeMM/src" modelPluginID="GiraffeMM" modelName="GiraffeMM"
+    rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container" importerID="org.eclipse.emf.importer.ecore"
+    complianceLevel="7.0" copyrightFields="false" operationReflection="true" importOrganizing="true">
+  <foreignModel>GiraffeMM.ecore</foreignModel>
+  <genPackages prefix="GiraffeMM" basePackage="GiraffeMM" disposableProviderFactory="true"
+      ecorePackage="GiraffeMM.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="GiraffeMM.ecore#//SrvSignal">
+      <genEnumLiterals ecoreEnumLiteral="GiraffeMM.ecore#//SrvSignal/start"/>
+      <genEnumLiterals ecoreEnumLiteral="GiraffeMM.ecore#//SrvSignal/restart"/>
+      <genEnumLiterals ecoreEnumLiteral="GiraffeMM.ecore#//SrvSignal/stop"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="GiraffeMM.ecore#//FileType">
+      <genEnumLiterals ecoreEnumLiteral="GiraffeMM.ecore#//FileType/local"/>
+      <genEnumLiterals ecoreEnumLiteral="GiraffeMM.ecore#//FileType/remote"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="GiraffeMM.ecore#//CodeType">
+      <genEnumLiterals ecoreEnumLiteral="GiraffeMM.ecore#//CodeType/code"/>
+      <genEnumLiterals ecoreEnumLiteral="GiraffeMM.ecore#//CodeType/script"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="GiraffeMM.ecore#//NativeProvType">
+      <genEnumLiterals ecoreEnumLiteral="GiraffeMM.ecore#//NativeProvType/amazon"/>
+      <genEnumLiterals ecoreEnumLiteral="GiraffeMM.ecore#//NativeProvType/google"/>
+      <genEnumLiterals ecoreEnumLiteral="GiraffeMM.ecore#//NativeProvType/g5000"/>
+      <genEnumLiterals ecoreEnumLiteral="GiraffeMM.ecore#//NativeProvType/virtualbox"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="GiraffeMM.ecore#//MonitoringType">
+      <genEnumLiterals ecoreEnumLiteral="GiraffeMM.ecore#//MonitoringType/predictive"/>
+      <genEnumLiterals ecoreEnumLiteral="GiraffeMM.ecore#//MonitoringType/reactive"/>
+    </genEnums>
+    <genClasses ecoreClass="GiraffeMM.ecore#//Environment">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Environment/provider"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Environment/otherprovider"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Environment/virtualmachine"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Environment/resources"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Environment/dependency"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//Auth">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Auth/password"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Auth/key"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Auth/credential"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//VirtualMachine">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//VirtualMachine/so"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//VirtualMachine/requirement"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//VirtualMachine/dependency"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//Dependency">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Dependency/install"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Dependency/service"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Dependency/file"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//Resource">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//Resource/relaxIndex"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Resource/cpu"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Resource/memory"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Resource/disk"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//CPU">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//CPU/frequency"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//CPU/cores"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//Provider">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//Provider/host"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//Provider/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Provider/auth"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Provider/resources"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Provider/virtualmachine"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//Password">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//Password/username"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//Password/password"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//Key">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//Key/file"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//Credential">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//Credential/file"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//Install">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//Install/depName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//Install/depVersion"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//Service">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//Service/srvName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//Service/srvVersion"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//Service/signal"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//File">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//File/location"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//File/type"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//OtherProvider">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//OtherProvider/class"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//OtherProvider/auth"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//OtherProvider/resources"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//OtherProvider/virtualmachine"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//Memory">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//Memory/amount"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//Disk">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//Disk/space"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//DeploymentDefinitions">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//DeploymentDefinitions/artifact"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//DeploymentDefinitions/nodeset"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//Deployment">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Deployment/setup"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Deployment/deploy"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//Artifact">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Artifact/config"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Artifact/configblock"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Artifact/code"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Artifact/codeexternal"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Artifact/script"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Artifact/scriptcommand"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Artifact/scriptblock"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//Config">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//Config/localFile"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//Config/destFile"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//ConfigBlock">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//ConfigBlock/destfile"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//Code"/>
+    <genClasses ecoreClass="GiraffeMM.ecore#//CodeExternal">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//CodeExternal/class"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//CodeExternal/method"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//Script">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//Script/file"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//ScriptCommand">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//ScriptCommand/command"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//ScriptBlock"/>
+    <genClasses ecoreClass="GiraffeMM.ecore#//Nodeset">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//Nodeset/range"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//Setup">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Setup/provider"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//Setup/autoscale"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//Setup/nodesNumber"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//Setup/monitoringMode"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Setup/otherprovider"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//Deploy">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//Deploy/timeout"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Deploy/setUp"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Deploy/exec"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//Execution">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Execution/artifact"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//Execution/nodeset"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GiraffeMM.ecore#//Execution/sequence"/>
+    </genClasses>
+    <genClasses ecoreClass="GiraffeMM.ecore#//GiraffeMetaModel">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//GiraffeMetaModel/environment"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//GiraffeMetaModel/deployment"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GiraffeMM.ecore#//GiraffeMetaModel/deploymentdefinitions"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

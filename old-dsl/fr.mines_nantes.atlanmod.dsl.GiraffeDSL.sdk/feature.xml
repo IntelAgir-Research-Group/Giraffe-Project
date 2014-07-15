@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature id="fr.mines_nantes.atlanmod.dsl.GiraffeDSL.sdk"
+	label="GiraffeDSL SDK Feature "
+	version="1.0.0.qualifier">
+	<plugin
+			id="fr.mines_nantes.atlanmod.dsl.GiraffeDSL"
+			download-size="0"
+			install-size="0"
+			version="0.0.0"
+			unpack="false"/>
+	<plugin
+			id="fr.mines_nantes.atlanmod.dsl.GiraffeDSL.ui"
+			download-size="0"
+			install-size="0"
+			version="0.0.0"
+			unpack="false"/>
+</feature>
