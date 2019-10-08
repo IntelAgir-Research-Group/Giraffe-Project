@@ -1,7 +1,8 @@
-Giraffe-Project
+The Giraffe/La Girafe
 ===============
 
-It is a repository of the Giraffe Project, which is a monitoring/scalability tool prototype.
+By using the Giraffe Tool, it's possible for testers to control the CBS elastic behavior as they need, which can be useful for regression testing or bug reproduction/repeatability. In addition, controlling the elastic behavior can reduce the execution time and cost (as a consequence).
+
 
 Giraffe=scale up + top view
 
